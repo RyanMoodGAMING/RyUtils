@@ -120,8 +120,8 @@
 
     <distributionManagement>
         <repository>
-            <id>ryanmood-repo-private</id>
-            <url>https://repo.ryanmood.ml/private</url>
+            <id>ryanmood-repo-releases</id>
+            <url>https://repo.ryanmood.ml/releases</url>
         </repository>
     </distributionManagement>
 
