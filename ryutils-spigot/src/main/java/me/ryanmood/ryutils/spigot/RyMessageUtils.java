@@ -65,7 +65,7 @@ public class RyMessageUtils {
      * @param message The message you wish to be translated.
      * @return        a translated String
      */
-    public static @NotNull String translate(String message) {
+    public static String translate(String message) {
         return HEXUtils.colorify(message)
                 .replace("%prefix%", getPrefix());
     }
