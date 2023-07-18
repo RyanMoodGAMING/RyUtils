@@ -28,7 +28,7 @@ public class RyMessageUtils {
 
     @Getter
     @Setter
-    private static String prefix;
+    private static String prefix = "";
     @Getter
     @Setter
     private static String errorPrefix = "&cError &7» &c";
