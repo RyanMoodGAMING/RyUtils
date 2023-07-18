@@ -3,6 +3,7 @@ package me.ryanmood.ryutils.spigot.commands;
 import me.ryanmood.ryutils.spigot.RyMessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -54,6 +55,8 @@ public abstract class Command extends org.bukkit.command.Command implements Comp
 
         registerBukkitCommand(aliases);
     }
+
+    public abstract boolean execute(CommandSender sender, String commandLabel, String[] args);
 
     private void registerBukkitCommand(String[] aliases) {
         try {
