@@ -46,6 +46,10 @@
                                     <pattern>com.cryptomorin.xseries</pattern>
                                     <shadedPattern>me.ryanmood.ryutils.spigot.lib.xseries</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.google.gson</pattern>
+                                    <shadedPattern>me.ryanmood.ryutils.spigot.lib.gson</shadedPattern>
+                                </relocation>
                             </relocations>
                             <filters>
                                 <filter>
