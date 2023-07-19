@@ -1,10 +1,10 @@
-package me.ryanmood.ryutils.bungee.managers;
+package me.ryanmood.ryutils.spigot.managers;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import me.ryanmood.ryutils.bungee.RySetup;
-import net.md_5.bungee.api.plugin.Plugin;
+import me.ryanmood.ryutils.spigot.RySetup;
+import org.bukkit.plugin.Plugin;
 
 /*
  * This software and its content is copyright of RyanMoodGAMING - © RyanMoodGAMING 2023. All rights reserved.
@@ -15,7 +15,7 @@ import net.md_5.bungee.api.plugin.Plugin;
  */
 
 @AllArgsConstructor
-public class HandlerManager {
+public class RyHandlerManager {
 
     @Getter(AccessLevel.PROTECTED)
     protected Plugin instance = RySetup.getPluginInstance();

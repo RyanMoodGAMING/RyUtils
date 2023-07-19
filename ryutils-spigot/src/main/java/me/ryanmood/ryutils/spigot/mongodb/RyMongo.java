@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class Mongo {
+public abstract class RyMongo {
 
     private boolean disableLogging;
     @Getter
@@ -33,7 +33,7 @@ public abstract class Mongo {
      * @param username The username of the database.
      * @param password The password of the database.
      */
-    public Mongo(String host, String database, String username, String password) {
+    public RyMongo(String host, String database, String username, String password) {
         this(host, 27017, database, username, password, true);
     }
 
@@ -46,7 +46,7 @@ public abstract class Mongo {
      * @param username The username of the database.
      * @param password The password of the database.
      */
-    public Mongo(String host, int port, String database, String username, String password) {
+    public RyMongo(String host, int port, String database, String username, String password) {
         this(host, port, database, username, password, true);
     }
 
@@ -60,7 +60,7 @@ public abstract class Mongo {
      * @param password The password of the database.
      * @param disableLogging Should MongoDB logger be disabled?
      */
-    public Mongo(String host, int port, String database, String username, String password, boolean disableLogging) {
+    public RyMongo(String host, int port, String database, String username, String password, boolean disableLogging) {
         try {
             MongoClientSettings.Builder settings = MongoClientSettings.builder();
             settings.applyConnectionString(new ConnectionString("mongodb://" + host + ":" + port));

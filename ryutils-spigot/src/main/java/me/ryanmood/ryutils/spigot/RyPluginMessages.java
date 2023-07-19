@@ -21,7 +21,7 @@ import java.util.UUID;
  * You may not, except with our express written permission, distribute or commercially exploit the content. Nor may you transmit it or store it in any other website or other form of electronic retrieval system.
  */
 
-public abstract class PluginMessages implements PluginMessageListener {
+public abstract class RyPluginMessages implements PluginMessageListener {
 
     @Getter
     private String outgoingChannelName;
@@ -31,7 +31,7 @@ public abstract class PluginMessages implements PluginMessageListener {
     /**
      * Create a Plugin Message instance.
      */
-    public PluginMessages() {
+    public RyPluginMessages() {
         this("BungeeCord", "BungeeCord");
     }
 
@@ -41,7 +41,7 @@ public abstract class PluginMessages implements PluginMessageListener {
      * @param outgoingChannelName The name of the outgoing channel.
      * @param incomingChannelName The name of the incoming channel.
      */
-    public PluginMessages(String outgoingChannelName, String incomingChannelName) {
+    public RyPluginMessages(String outgoingChannelName, String incomingChannelName) {
         this.outgoingChannelName = outgoingChannelName;
         this.incomingChannelName = incomingChannelName;
 
