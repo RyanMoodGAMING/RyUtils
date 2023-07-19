@@ -136,7 +136,7 @@ public abstract class RyFile {
     /**
      * Get a string list from the configuration.
      *
-     * @param path          Location of the string.
+     * @param path          Location of the string list.
      * @param defaultResult The default result if it is null.
      * @return     The requested string.
      */
@@ -174,6 +174,16 @@ public abstract class RyFile {
      */
     public double getDouble(String path) {
         return this.getConfig().getDouble(path);
+    }
+
+    /**
+     * Get a long from the configuration.
+     *
+     * @param path Location of the long.
+     * @return     The requested long.
+     */
+    public long getLong(String path) {
+        return this.getConfig().getLong(path);
     }
 
     /**

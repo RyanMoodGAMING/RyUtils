@@ -201,6 +201,36 @@ public abstract class RyFile {
     }
 
     /**
+     * Get a long from the configuration.
+     *
+     * @param path Location of the long.
+     * @return     The requested long.
+     */
+    public long getLong(String path) {
+        return this.getConfig().getLong(path);
+    }
+
+    /**
+     * Get a float from the configuration.
+     *
+     * @param path Location of the float.
+     * @return     The requested float.
+     */
+    public float getFloat(String path) {
+        return this.getConfig().getFloat(path);
+    }
+
+    /**
+     * Get a short from the configuration.
+     *
+     * @param path Location of the short.
+     * @return     The requested short.
+     */
+    public short getShort(String path) {
+        return this.getConfig().getShort(path);
+    }
+
+    /**
      * Get a config section from the configuration.
      *
      * @param path Location of the config section.
