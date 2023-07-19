@@ -50,6 +50,10 @@
                                     <pattern>com.google.gson</pattern>
                                     <shadedPattern>me.ryanmood.ryutils.spigot.lib.gson</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.mongodb</pattern>
+                                    <shaddedPattern>me.ryanmood.ryutils.spigot.lib.mongodb</shaddedPattern>
+                                </relocation>
                             </relocations>
                             <filters>
                                 <filter>
@@ -118,6 +122,12 @@
                 </exclusion>
             </exclusions>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>3.12.11</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
