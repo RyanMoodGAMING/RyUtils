@@ -135,6 +135,19 @@ public abstract class RyFile {
     }
 
     /**
+     * Get a string from the configuration.
+     *
+     * @param path          Location of the string.
+     * @param defaultResult The default result if it is null.
+     * @return     The requested string.
+     */
+    public String getString(String path, String defaultResult) {
+        String result = getString(path);
+        if (result.equalsIgnoreCase("") || result == null) return defaultResult;
+        else return result;
+    }
+
+    /**
      * Get a string list from the configuration.
      *
      * @param path Location of the string list.
@@ -142,6 +155,19 @@ public abstract class RyFile {
      */
     public List<String> getStringList(String path) {
         return this.getConfig().getStringList(path);
+    }
+
+    /**
+     * Get a string list from the configuration.
+     *
+     * @param path          Location of the string.
+     * @param defaultResult The default result if it is null.
+     * @return     The requested string.
+     */
+    public List<String> getStringList(String path, List<String> defaultResult) {
+        List<String> result = getStringList(path);
+        if (result.size() == 0 || result == null) return defaultResult;
+        else return result;
     }
 
     /**
