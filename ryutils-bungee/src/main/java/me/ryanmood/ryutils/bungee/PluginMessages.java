@@ -12,7 +12,7 @@ import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-public abstract class PluginMessager implements Listener {
+public abstract class PluginMessages implements Listener {
 
     @Getter
     private String outgoingChannelName;
@@ -22,7 +22,7 @@ public abstract class PluginMessager implements Listener {
     /**
      * Create a Plugin Message instance.
      */
-    public PluginMessager() {
+    public PluginMessages() {
         this("BungeeCord", "Bungeecord");
     }
 
@@ -32,7 +32,7 @@ public abstract class PluginMessager implements Listener {
      * @param outgoingChannelName The name of the outgoing channel.
      * @param incomingChannelName The name of the incoming channel.
      */
-    public PluginMessager(String outgoingChannelName, String incomingChannelName) {
+    public PluginMessages(String outgoingChannelName, String incomingChannelName) {
         this.outgoingChannelName = outgoingChannelName;
         this.incomingChannelName = incomingChannelName;
 
@@ -85,7 +85,6 @@ public abstract class PluginMessager implements Listener {
 
     // Responses
 
-    PluginMessages
     public void kickAllResponse(String subchannel, ByteArrayDataInput input) {
         if (!subchannel.equalsIgnoreCase("RyUtils-KickAll")) return;
 
