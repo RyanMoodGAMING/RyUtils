@@ -6,15 +6,13 @@
 
     <groupId>me.ryanmood.ryutils</groupId>
     <artifactId>RyUtils</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
 
     <name>RyUtils</name>
 
     <modules>
         <module>ryutils-spigot</module>
         <module>ryutils-bungee</module>
-        <module>ryutils-velocity</module>
-        <module>ryutils-folia</module>
     </modules>
 
     <packaging>pom</packaging>
