@@ -50,6 +50,15 @@ public abstract class RyPluginMessages implements PluginMessageListener {
                 this);
     }
 
+    /**
+     * The actions that occur when a plugin message is received.
+     *
+     * @param subchannel The sub channel of the message.
+     * @param player     The player that sent the message.
+     * @param input      The message's message.
+     */
+    protected abstract void receievedActions(String subchannel, Player player, ByteArrayDataInput input);
+
     @Override
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
         if (!channel.equals(this.incomingChannelName)) return;
@@ -59,15 +68,6 @@ public abstract class RyPluginMessages implements PluginMessageListener {
 
         receievedActions(subchannel, player, input);
     }
-
-    /**
-     * The actions that occur when a plugin message is recieved.
-     *
-     * @param subchannel The sub channel of the message.
-     * @param player     The player that sent the message.
-     * @param input      The message's message.
-     */
-    abstract void receievedActions(String subchannel, Player player, ByteArrayDataInput input);
 
     /**
      * Send a plugin message.

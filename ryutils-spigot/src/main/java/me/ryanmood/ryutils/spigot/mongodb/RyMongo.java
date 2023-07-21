@@ -87,6 +87,6 @@ public abstract class RyMongo {
     /**
      * Initialize the database's collections.
      */
-    abstract void initCollections();
+    protected abstract void initCollections();
 
 }

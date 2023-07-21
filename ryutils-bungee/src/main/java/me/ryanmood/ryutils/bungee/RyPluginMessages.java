@@ -48,6 +48,14 @@ public abstract class RyPluginMessages implements Listener {
         RySetup.getPluginInstance().getProxy().getPluginManager().registerListener(RySetup.getPluginInstance(), this);
     }
 
+    /**
+     * The actions that occur when a plugin message is recieved.
+     *
+     * @param subchannel The sub channel of the message.
+     * @param input      The message's message.
+     */
+    abstract void receievedActions(String subchannel, ByteArrayDataInput input);
+
     @EventHandler
     public void onPluginMessageReceive(PluginMessageEvent event) {
         if (!event.getTag().equalsIgnoreCase(this.getIncomingChannelName())) return;
@@ -56,14 +64,6 @@ public abstract class RyPluginMessages implements Listener {
 
         receievedActions(subchannel, input);
     }
-
-    /**
-     * The actions that occur when a plugin message is recieved.
-     *
-     * @param subchannel The sub channel of the message.
-     * @param input      The message's message.
-     */
-    abstract void receievedActions(String subchannel, ByteArrayDataInput input);
 
     /**
      * Send a plugin message.
