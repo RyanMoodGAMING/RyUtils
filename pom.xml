@@ -6,7 +6,7 @@
 
     <groupId>me.ryanmood.ryutils</groupId>
     <artifactId>RyUtils</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
 
     <name>RyUtils</name>
 
@@ -119,7 +119,7 @@
     <distributionManagement>
         <repository>
             <id>ryanmood-repo-releases</id>
-            <url>https://repo.ryanmood.ml/releases</url>
+            <url>https://repo.ryanmood.me/releases</url>
         </repository>
     </distributionManagement>
 
