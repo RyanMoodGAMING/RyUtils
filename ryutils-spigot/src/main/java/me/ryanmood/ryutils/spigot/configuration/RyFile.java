@@ -119,7 +119,7 @@ public abstract class RyFile {
      */
     public String getString(String path, String defaultResult) {
         String result = getString(path);
-        if (result.equalsIgnoreCase("") || result == null) return defaultResult;
+        if (result == null) return defaultResult;
         else return result;
     }
 
