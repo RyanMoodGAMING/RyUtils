@@ -1,4 +1,4 @@
-package me.ryanmood.ryutils.spigot.mongodb;
+package me.ryanmood.ryutils.bungee.data;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -7,7 +7,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import lombok.Getter;
-import me.ryanmood.ryutils.spigot.RyMessageUtils;
+import me.ryanmood.ryutils.bungee.RyMessageUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.TimeUnit;
