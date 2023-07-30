@@ -7,7 +7,7 @@
     <parent>
         <artifactId>RyUtils</artifactId>
         <groupId>me.ryanmood.ryutils</groupId>
-        <version>0.2.1-SNAPSHOT</version>
+        <version>0.2.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>RyUtils-Bungee</artifactId>
@@ -44,7 +44,11 @@
                             <relocations>
                                 <relocation>
                                     <pattern>com.google.gson</pattern>
-                                    <shadedPattern>me.ryanmood.ryutils.spigot.lib.gson</shadedPattern>
+                                    <shadedPattern>me.ryanmood.ryutils.bungee.lib.gson</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.mongodb</pattern>
+                                    <shadedPattern>me.ryanmood.ryutils.bungee.lib.mongodb</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
