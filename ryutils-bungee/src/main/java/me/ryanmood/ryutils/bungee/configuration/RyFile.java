@@ -240,4 +240,27 @@ public abstract class RyFile {
         return this.getConfig().getSection(path);
     }
 
+    /**
+     * Get an object from the configuration.
+     *
+     * @param path Location of the object.
+     * @return The requested object.
+     */
+    public Object getObject(String path) {
+        return this.getConfig().get(path);
+    }
+
+    /**
+     * Get an object from the configuration.
+     *
+     * @param path          Location of the object.
+     * @param defaultResult The default result if it is null.
+     * @return The requested object.
+     */
+    public Object getObject(String path, Object defaultResult) {
+        Object object = this.getConfig().get(path);
+        if (object == null) return defaultResult;
+        else return object;
+    }
+
 }
