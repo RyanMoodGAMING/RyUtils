@@ -85,5 +85,11 @@
             </exclusions>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>4.10.2</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
