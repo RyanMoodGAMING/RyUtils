@@ -46,10 +46,6 @@
                                     <pattern>com.google.gson</pattern>
                                     <shadedPattern>me.ryanmood.ryutils.bungee.lib.gson</shadedPattern>
                                 </relocation>
-                                <relocation>
-                                    <pattern>com.mongodb</pattern>
-                                    <shadedPattern>me.ryanmood.ryutils.bungee.lib.mongodb</shadedPattern>
-                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -93,7 +89,7 @@
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
             <version>4.10.2</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

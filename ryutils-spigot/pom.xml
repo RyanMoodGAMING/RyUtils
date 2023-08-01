@@ -7,7 +7,7 @@
     <parent>
         <groupId>me.ryanmood.ryutils</groupId>
         <artifactId>RyUtils</artifactId>
-        <version>0.2.2-SNAPSHOT</version>
+        <version>0.2.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>RyUtils-Spigot</artifactId>
@@ -49,10 +49,6 @@
                                 <relocation>
                                     <pattern>com.google.gson</pattern>
                                     <shadedPattern>me.ryanmood.ryutils.spigot.lib.gson</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>com.mongodb</pattern>
-                                    <shadedPattern>me.ryanmood.ryutils.spigot.lib.mongodb</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>
@@ -127,7 +123,7 @@
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
             <version>4.10.2</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
