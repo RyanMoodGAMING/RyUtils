@@ -33,6 +33,11 @@ public abstract class RyFile {
     @Getter
     private String fullName;
     /**
+     * The file location of the config.
+     */
+    @Getter
+    private File directory;
+    /**
      * The file of the config.
      */
     @Getter
@@ -49,6 +54,15 @@ public abstract class RyFile {
      * @param name The name of the config.
      */
     protected RyFile(String name) {
+        this(name, RySetup.getPluginInstance().getDataFolder());
+    }
+
+    /**
+     *
+     * @param name      The name of the config.
+     * @param directory The location of the conifg.
+     */
+    protected RyFile(String name, File directory) {
         this.fullName = name.endsWith(".yml") ? name : name + "yml";
         this.instance = RySetup.getPluginInstance();
         loadFile();
@@ -64,11 +78,11 @@ public abstract class RyFile {
      *
      */
     private File loadResource() {
-        if (!this.instance.getDataFolder().exists()) {
-            this.instance.getDataFolder().mkdir();
+        if (!this.getDirectory().exists()) {
+            this.getDirectory().mkdir();
         }
 
-        File file = new File(this.instance.getDataFolder(), this.fullName);
+        File file = new File(this.getDirectory(), this.fullName);
         try {
             if (!file.exists()) {
                 file.createNewFile();
