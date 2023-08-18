@@ -7,7 +7,7 @@
     <parent>
         <groupId>me.ryanmood.ryutils</groupId>
         <artifactId>RyUtils</artifactId>
-        <version>0.2.3-SNAPSHOT</version>
+        <version>0.2.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>RyUtils-Spigot</artifactId>
@@ -105,7 +105,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>9.4.0</version>
+            <version>9.5.0</version>
         </dependency>
         <dependency>
             <groupId>net.dv8tion</groupId>
