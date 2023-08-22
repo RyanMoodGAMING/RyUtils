@@ -64,10 +64,7 @@ public abstract class RyDiscordUtil {
             RyMessageUtils.sendPluginError("An error occurred while connecting to the discord bot.", exception, RySetup.isDebug());
         }
         if (this.jda == null) {
-            RyMessageUtils.sendPluginError("Plugin has been disabled due to JDA been null.");
-            ProxyServer.getInstance().getPluginManager().unregisterCommands(instance);
-            ProxyServer.getInstance().getPluginManager().unregisterListeners(instance);
-            instance.onDisable();
+            RyMessageUtils.sendPluginError("Plugin has been disabled due to JDA been null.", true);
             return;
         }
         onConnect();
