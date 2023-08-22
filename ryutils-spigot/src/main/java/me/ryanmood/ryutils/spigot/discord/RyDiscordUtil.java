@@ -58,7 +58,7 @@ public abstract class RyDiscordUtil {
      */
     public void connectBot(Plugin instance) {
         try {
-            this.jda = JDABuilder.createDefault(this.botToken).enableIntents(GatewayIntent.GUILD_MEMBERS)
+            this.jda = JDABuilder.createDefault(this.botToken).enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
                     .build().awaitReady();
         } catch (InterruptedException exception) {
             RyMessageUtils.sendPluginError("An error occurred while connecting to the discord bot.", exception, RySetup.isDebug());
