@@ -63,6 +63,7 @@ public abstract class RyFile {
      */
     protected RyFile(String name, File directory) {
         this.fullName = name.endsWith(".yml") ? name : name + "yml";
+        this.directory = directory;
         this.instance = RySetup.getPluginInstance();
         loadFile();
     }
