@@ -36,6 +36,9 @@ public class RyMessageUtils {
     @Getter
     @Setter
     private static String breaker = "&7&m------------------------------------";
+    @Getter
+    @Setter
+    private static String supportMessage = "Please contact the plugin author for support.";
 
     /**
      * Translates the message given and for colours, PAPI, %prefix% and %player%.
@@ -265,7 +268,7 @@ public class RyMessageUtils {
         sendConsole(true, breaker,
                 "&fAn error occurred while verifying your license.",
                 "&fError: &c" + error,
-                "&fPlease contact support @ https://discord.ryanmood.com",
+                getSupportMessage(),
                 breaker);
     }
 
@@ -279,7 +282,7 @@ public class RyMessageUtils {
         sendConsole(true, breaker,
                 "&fAn error occurred while verifying your license.",
                 "&fError: &c" + error,
-                "&fPlease contact support @ https://discord.ryanmood.com",
+                getSupportMessage(),
                 breaker);
         if (disablePlugin && instance != null) {
               Bukkit.getPluginManager().disablePlugin(instance);
@@ -295,7 +298,7 @@ public class RyMessageUtils {
         sendConsole(true, breaker,
                 "&fAn error has occurred.",
                 "&fError: &c" + error,
-                "&fPlease contact support @ https://discord.ryanmood.com",
+                getSupportMessage(),
                 breaker);
     }
 
@@ -309,7 +312,7 @@ public class RyMessageUtils {
         sendConsole(true, breaker,
                 "&fAn error has occurred.",
                 "&fError: &c" + error,
-                "&fPlease contact support @ https://discord.ryanmood.com",
+                getSupportMessage(),
                 breaker);
         if (disablePlugin && instance != null) {
             Bukkit.getPluginManager().disablePlugin(instance);
@@ -327,7 +330,7 @@ public class RyMessageUtils {
         sendConsole(true, breaker,
                 "&fAn error has occurred.",
                 "&fError: &c" + error,
-                "&fPlease contact support @ https://discord.ryanmood.com",
+                getSupportMessage(),
                 breaker);
         if (debug) {
             sendConsole(true, "&fAs you have debug enabled in your config.yml, the following stacktrace error is due to this:");
@@ -347,7 +350,7 @@ public class RyMessageUtils {
         sendConsole(true, breaker,
                 "&fAn error has occurred.",
                 "&fError: &c" + error,
-                "&fPlease contact support @ https://discord.ryanmood.com",
+                getSupportMessage(),
                 breaker);
         if (debug) {
             sendConsole(true, "&fAs you have debug enabled in your config.yml, the following stacktrace error is due to this:");
