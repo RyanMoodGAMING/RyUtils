@@ -14,6 +14,7 @@
         <module>ryutils-spigot</module>
         <module>ryutils-bungee</module>
         <module>ryutils-data</module>
+        <module>ryutils-velocity</module>
     </modules>
 
     <packaging>pom</packaging>
