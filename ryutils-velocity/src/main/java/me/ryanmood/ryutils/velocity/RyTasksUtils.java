@@ -22,10 +22,12 @@ public class RyTasksUtils {
 
     /**
      * Create a task that runs within a scheduler.
+     * @deprecated use {@link #runAsync(Plugin, Runnable)} instead.
      *
      * @param plugin   The instance of the plugin you are using.
      * @param callable The Runnable code you would like to happen.
      */
+    @Deprecated
     public static void run(@NotNull Plugin plugin, Runnable callable) {
         runAsync(plugin, callable);
     }
@@ -42,12 +44,14 @@ public class RyTasksUtils {
 
     /**
      * Create a task that runs within a scheduler after a certain amount of time.
+     * @deprecated use {@link #runAsyncLater(Plugin, Runnable, long, TimeUnit)} instead.
      *
      * @param plugin   The instance of the plugin you are using.
      * @param callable The Runnable code you would like to happen.
      * @param delay    The delay before the runnable runs.
      * @param timeUnit The time unit.
      */
+    @Deprecated
     public static void runLater(@NotNull Plugin plugin, Runnable callable, long delay, TimeUnit timeUnit) {
         runAsyncLater(plugin, callable, delay, timeUnit);
     }
@@ -66,6 +70,7 @@ public class RyTasksUtils {
 
     /**
      * Create a task that runs on a timer within a scheduler after a certain amount of time.
+     * @deprecated use {@link #runAsyncTimer(Plugin, Runnable, long, long, TimeUnit)} instead.
      *
      * @param plugin   The instance of the plugin you are using.
      * @param callable The Runnable code you would like to happen.
@@ -73,6 +78,7 @@ public class RyTasksUtils {
      * @param interval The interval before the runnable runs again.
      * @param timeUnit The time unit.
      */
+    @Deprecated
     public static void runTimer(@NotNull Plugin plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
         runAsyncTimer(plugin, callable, delay, interval, timeUnit);
     }
