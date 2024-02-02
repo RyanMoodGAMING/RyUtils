@@ -1,9 +1,12 @@
 package me.ryanmood.ryutils.velocity;
 
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.nio.file.Path;
 
 /*
  * This software and its content is copyright of RyanMoodGAMING - © RyanMoodGAMING 2024. All rights reserved.
@@ -15,9 +18,10 @@ import lombok.Setter;
 
 public class RySetup {
 
-    public RySetup(Plugin pluginInstance, ProxyServer proxyServer) {
+    public RySetup(Plugin pluginInstance, ProxyServer proxyServer, @DataDirectory Path path) {
         setPluginInstance(pluginInstance);
         setProxyServer(proxyServer);
+        setPluginPath(path);
     }
 
     /**
@@ -33,6 +37,13 @@ public class RySetup {
     @Getter
     @Setter
     private static ProxyServer proxyServer = null;
+
+    /**
+     * The path of the plugin's folder.
+     */
+    @Getter
+    @Setter
+    private static Path pluginPath = null;
 
     /**
      * Should the plugin send debug messages?

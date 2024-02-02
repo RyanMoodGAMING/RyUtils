@@ -2,7 +2,6 @@ package me.ryanmood.ryutils.velocity;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.plugin.Plugin;
-import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
