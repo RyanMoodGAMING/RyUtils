@@ -15,12 +15,12 @@ import me.ryanmood.ryutils.velocity.RyMessageUtils;
 import me.ryanmood.ryutils.velocity.RySetup;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.event.WindowStateListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public abstract class RyFile {
 
     /**

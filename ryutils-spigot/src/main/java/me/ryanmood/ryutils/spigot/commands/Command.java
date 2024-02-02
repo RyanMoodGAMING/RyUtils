@@ -16,6 +16,7 @@ import java.util.*;
  * You may not, except with our express written permission, distribute or commercially exploit the content. Nor may you transmit it or store it in any other website or other form of electronic retrieval system.
  */
 
+@SuppressWarnings("unused")
 public abstract class Command extends org.bukkit.command.Command implements Comparable<Command>, Executable {
 
     private final String name;

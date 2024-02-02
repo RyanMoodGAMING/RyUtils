@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 // Taken from
 // https://github.com/Rosewood-Development/RoseGarden/blob/master/src/main/java/dev/rosewood/rosegarden/utils/HexUtils.java
+@SuppressWarnings("unused")
 final class HEXUtils {
 
     private static final int CHARS_UNTIL_LOOP = 30;
