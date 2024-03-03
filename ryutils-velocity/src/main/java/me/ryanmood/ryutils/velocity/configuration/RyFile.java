@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -218,11 +219,24 @@ public abstract class RyFile {
      *
      * @param path          Location of the string list.
      * @param defaultResult The default result if it is null.
-     * @return     The requested string.
+     * @return              The requested string.
      */
     public List<String> getStringList(String path, List<String> defaultResult) {
         List<String> result = getStringList(path);
         if (result.size() == 0 || result == null) return defaultResult;
+        else return result;
+    }
+
+    /**
+     * Get a string list from the configuration.
+     *
+     * @param path           Location of the string list.
+     * @param defaultResults The default result if it is null.
+     * @return               The requested string list.
+     */
+    public List<String> getStringList(String path, String... defaultResults) {
+        List<String> result = getStringList(path);
+        if (result.size() == 0 || result == null) return Arrays.asList(defaultResults);
         else return result;
     }
 

@@ -10,6 +10,7 @@ import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -205,6 +206,19 @@ public abstract class RyFile {
     public List<String> getStringList(String path, List<String> defaultResult) {
         List<String> result = getStringList(path);
         if (result.size() == 0 || result == null) return defaultResult;
+        else return result;
+    }
+
+    /**
+     * Get a string list from the configuration.
+     *
+     * @param path           Location of the string list.
+     * @param defaultResults The default result if it is null.
+     * @return               The requested string list.
+     */
+    public List<String> getStringList(String path, String... defaultResults) {
+        List<String> result = getStringList(path);
+        if (result.size() == 0 || result == null) return Arrays.asList(defaultResults);
         else return result;
     }
 
