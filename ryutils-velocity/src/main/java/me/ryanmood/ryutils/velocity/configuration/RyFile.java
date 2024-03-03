@@ -58,19 +58,72 @@ public abstract class RyFile {
     @Getter
     private YamlDocument config;
 
-    protected RyFile(String name) {
-        this(name, RySetup.getPluginPath(), false, null);
+    /**
+     * The configuration file.
+     *
+     * @param name The name of the config.
+     */
+    public RyFile(String name) {
+        this(RySetup.getPluginInstance(), name, RySetup.getPluginPath(), false, null);
     }
 
-    protected RyFile(String name, boolean autoUpdate) {
-        this(name, RySetup.getPluginPath(), autoUpdate, "config-version");
+    /**
+     * The configuration file.
+     *
+     * @param instance The plugin's instance.
+     * @param name     The name of the config.
+     */
+    public RyFile(Plugin instance, String name) {
+        this (instance, name, RySetup.getPluginPath(), false, null);
     }
 
-    protected RyFile(String name, @DataDirectory Path dataDirectory, boolean autoUpdate, @Nullable String versionPath) {
+    /**
+     * The configuration file.
+     *
+     * @param name       The name of the plugin.
+     * @param autoUpdate Should the config auto update?
+     */
+    public RyFile(String name, boolean autoUpdate) {
+        this(RySetup.getPluginInstance(), name, RySetup.getPluginPath(), autoUpdate, "config-version");
+    }
+
+    /**
+     * The configuration file.
+     *
+     * @param instance   The plugin's instance.
+     * @param name       The name of the plugin.
+     * @param autoUpdate Should the config auto update?
+     */
+    public RyFile(Plugin instance, String name, boolean autoUpdate) {
+        this(instance, name, RySetup.getPluginPath(), autoUpdate, "config-version");
+    }
+
+    /**
+     * The configuration file.
+     *
+     * @param name          The name of the config.
+     * @param dataDirectory The location of the config.
+     * @param autoUpdate    Should the config auto update?
+     * @param versionPath   The path which shows the version of the config.
+     */
+    public RyFile(String name, @DataDirectory Path dataDirectory, boolean autoUpdate, @Nullable String versionPath) {
+        this(RySetup.getPluginInstance(), name, dataDirectory, autoUpdate, versionPath);
+    }
+
+    /**
+     * The configuration file.
+     *
+     * @param instance      The plugin's instance.
+     * @param name          The name of the config.
+     * @param dataDirectory The location of the config.
+     * @param autoUpdate    Should the config auto update?
+     * @param versionPath   The path which shows the version of the config.
+     */
+    public RyFile(Plugin instance, String name, @DataDirectory Path dataDirectory, boolean autoUpdate, @Nullable String versionPath) {
         this.fullName = name.endsWith(".yml") ? name : name + "yml";
         this.directory = dataDirectory.toFile();
         this.dataDirectory = dataDirectory;
-        this.instance = RySetup.getPluginInstance();
+        this.instance = instance;
         this.server = RySetup.getProxyServer();
 
         try {

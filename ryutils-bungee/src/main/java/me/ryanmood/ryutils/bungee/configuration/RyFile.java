@@ -54,19 +54,41 @@ public abstract class RyFile {
      *
      * @param name The name of the config.
      */
-    protected RyFile(String name) {
+    public RyFile(String name) {
         this(name, RySetup.getPluginInstance().getDataFolder());
     }
 
     /**
+     * The configuration file
+     *
+     * @param instance The plugin instance.
+     * @param name     The name of the config.
+     */
+    public RyFile(Plugin instance, String name) {
+        this(instance, name, instance.getDataFolder());
+    }
+
+    /**
+     * The configuration file.
      *
      * @param name      The name of the config.
      * @param directory The location of the conifg.
      */
-    protected RyFile(String name, File directory) {
+    public RyFile(String name, File directory) {
+        this(RySetup.getPluginInstance(), name, directory);
+    }
+
+    /**
+     * The configuration file.
+     *
+     * @param instance  The plugin instance.
+     * @param name      The name of the config.
+     * @param directory The location of the config.
+     */
+    public RyFile(Plugin instance, String name, File directory) {
         this.fullName = name.endsWith(".yml") ? name : name + "yml";
         this.directory = directory;
-        this.instance = RySetup.getPluginInstance();
+        this.instance = instance;
         loadFile();
     }
 
