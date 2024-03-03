@@ -16,6 +16,17 @@ import net.md_5.bungee.api.plugin.Plugin;
 public class RySetup {
 
     /**
+     * Setup RyUtils
+     *
+     * @param pluginInstance The instance of the plugin.
+     * @param debug          Should debug be on or off?
+     */
+    public RySetup(Plugin pluginInstance, boolean debug) {
+        setPluginInstance(pluginInstance);
+        setDebug(debug);
+    }
+
+    /**
      * The instance of the plugin.
      */
     @Getter

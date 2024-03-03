@@ -18,6 +18,13 @@ import java.nio.file.Path;
 
 public class RySetup {
 
+    /**
+     * Setup RyUtils.
+     *
+     * @param pluginInstance The instance of the plugin.
+     * @param proxyServer    The proxy server of the plugin.
+     * @param path           The configuration path.
+     */
     public RySetup(Plugin pluginInstance, ProxyServer proxyServer, @DataDirectory Path path) {
         setPluginInstance(pluginInstance);
         setProxyServer(proxyServer);

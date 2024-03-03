@@ -16,6 +16,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class RySetup {
 
     /**
+     * Setup RyUtils
+     *
+     * @param pluginInstance The instance of the plugin.
+     * @param debug          Should debug be on or off?
+     */
+    public RySetup(JavaPlugin pluginInstance, boolean debug) {
+        setPluginInstance(pluginInstance);
+        setDebug(debug);
+    }
+
+    /**
      * The plugin's instance.
      */
     @Getter
