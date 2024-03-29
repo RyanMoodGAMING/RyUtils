@@ -2,9 +2,11 @@ package me.ryanmood.ryutils.velocity;
 
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.scheduler.ScheduledTask;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -19,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class RyTasksUtils {
 
     @Setter
-    private static ProxyServer server;
+    private static ProxyServer server = RySetup.getProxyServer();
 
     /**
      * Create a task that runs within a scheduler.
@@ -95,6 +97,31 @@ public class RyTasksUtils {
      */
     public static void runAsyncTimer(@NotNull Plugin plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
         server.getScheduler().buildTask(plugin, callable).delay(delay, timeUnit).repeat(interval, timeUnit).schedule();
+    }
+
+    /**
+     * Create a task that repeats on a timer within an async scheduler after a certain amount of time.
+     *
+     * @param plugin   The instance of the plugin you are using.
+     * @param callable The Runnable code you would like to happen.
+     * @param delay    The delay before the runnable repeats.
+     * @param timeUnit The time unit.
+     */
+    public static void runAsyncRepeat(@NotNull Plugin plugin, Runnable callable, long delay, TimeUnit timeUnit) {
+        server.getScheduler().buildTask(plugin, callable).repeat(delay, timeUnit).schedule();
+    }
+
+    /**
+     * Cancel all tasks that a plugin has.
+     *
+     * @param plugin The instance of the plugin you are using.
+     */
+    public static void cancelAll(@NotNull Plugin plugin) {
+        Collection<ScheduledTask> tasks = server.getScheduler().tasksByPlugin(plugin);
+
+        for (ScheduledTask task : tasks) {
+            task.cancel();
+        }
     }
 
 }
