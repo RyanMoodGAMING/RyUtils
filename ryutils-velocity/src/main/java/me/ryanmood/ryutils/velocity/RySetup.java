@@ -25,10 +25,11 @@ public class RySetup {
      * @param proxyServer    The proxy server of the plugin.
      * @param path           The configuration path.
      */
-    public RySetup(Plugin pluginInstance, ProxyServer proxyServer, @DataDirectory Path path) {
+    public RySetup(Plugin pluginInstance, ProxyServer proxyServer, @DataDirectory Path path, boolean debug) {
         setPluginInstance(pluginInstance);
         setProxyServer(proxyServer);
         setPluginPath(path);
+        setDebug(debug);
     }
 
     /**
