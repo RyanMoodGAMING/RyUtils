@@ -44,7 +44,7 @@
                             <relocations>
                                 <relocation>
                                     <pattern>com.google.gson</pattern>
-                                    <shadedPattern>me.ryanmood.ryutils.spigot.lib.gson</shadedPattern>
+                                    <shadedPattern>me.ryanmood.ryutils.velocity.lib.gson</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
