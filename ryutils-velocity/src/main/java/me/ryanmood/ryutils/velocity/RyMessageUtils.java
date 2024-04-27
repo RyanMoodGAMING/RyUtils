@@ -29,6 +29,8 @@ public class RyMessageUtils {
     private static Object instance = RySetup.getPluginInstance();
     @Setter
     private static ProxyServer server = RySetup.getProxyServer();
+    @Setter
+    private static String pluginId = RySetup.getPluginId();
 
     @Getter
     @Setter
@@ -290,7 +292,7 @@ public class RyMessageUtils {
                 getSupportMessage(),
                 breaker);
         if (disablePlugin && instance != null && server != null) {
-            server.getPluginManager().getPlugin(instance.name()).get().getExecutorService().shutdown();
+            server.getPluginManager().getPlugin(pluginId).get().getExecutorService().shutdown();
         }
     }
 
@@ -320,7 +322,7 @@ public class RyMessageUtils {
                 getSupportMessage(),
                 breaker);
         if (disablePlugin && instance != null && server != null) {
-            server.getPluginManager().getPlugin(instance.name()).get().getExecutorService().shutdown();
+            server.getPluginManager().getPlugin(pluginId).get().getExecutorService().shutdown();
         }
     }
 
@@ -362,7 +364,7 @@ public class RyMessageUtils {
             exception.printStackTrace();
         }
         if (disablePlugin && instance != null && server != null) {
-            server.getPluginManager().getPlugin(instance.name()).get().getExecutorService().shutdown();
+            server.getPluginManager().getPlugin(pluginId).get().getExecutorService().shutdown();
         }
     }
 

@@ -23,12 +23,14 @@ public class RySetup {
      *
      * @param pluginInstance The instance of the plugin.
      * @param proxyServer    The proxy server of the plugin.
+     * @param pluginId       The id of the plugin.
      * @param path           The configuration path.
      */
-    public RySetup(Object pluginInstance, ProxyServer proxyServer, @DataDirectory Path path, boolean debug) {
+    public RySetup(Object pluginInstance, ProxyServer proxyServer, @DataDirectory Path path, String pluginId, boolean debug) {
         setPluginInstance(pluginInstance);
         setProxyServer(proxyServer);
         setPluginPath(path);
+        setPluginId(pluginId);
         setDebug(debug);
     }
 
@@ -52,6 +54,13 @@ public class RySetup {
     @Getter
     @Setter
     private static Path pluginPath = null;
+
+    /**
+     * The ID of the plugin.
+     */
+    @Getter
+    @Setter
+    private static String pluginId = null;
 
     /**
      * Should the plugin send debug messages?
