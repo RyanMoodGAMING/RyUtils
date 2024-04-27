@@ -1,6 +1,5 @@
 package me.ryanmood.ryutils.velocity.commands;
 
-import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,15 +21,6 @@ public class RyCommandManager {
 
     public RyCommandManager(ProxyServer server) {
         this.server = server;
-    }
-
-    /**
-     * Register all the commands that are in the Array List.
-     */
-    public void registerAll(){
-        commands.addAll(Arrays.asList(
-
-        ));
     }
 
     /**
@@ -62,7 +52,7 @@ public class RyCommandManager {
      * @param command The command name.
      * @return        The command class.
      */
-    public Optional<RyCommand> byCommand(String command) {
+    public Optional<RyCommand> getCommand(String command) {
         return commands.stream().filter(all -> {
             if (all.getMeta().getAliases().contains(command)) {
                 return true;

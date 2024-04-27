@@ -52,10 +52,8 @@ public abstract class RyDiscordUtil {
 
     /**
      * Connects the bot to Discord.
-     *
-     * @param instance The instance of the plugin.
      */
-    public void connectBot(Plugin instance) {
+    public void connectBot() {
         try {
             this.jda = JDABuilder.createDefault(this.botToken).enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
                     .build().awaitReady();

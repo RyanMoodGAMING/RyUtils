@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class RyMessageUtils {
 
     @Setter
-    private static Plugin instance = RySetup.getPluginInstance();
+    private static Object instance = RySetup.getPluginInstance();
     @Setter
     private static ProxyServer server = RySetup.getProxyServer();
 

@@ -6,7 +6,6 @@ import com.google.common.io.ByteStreams;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
@@ -20,7 +19,7 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 public abstract class RyPluginMessages {
 
-    private Plugin instance;
+    private Object instance;
     private ProxyServer proxyServer;
 
     @Getter
@@ -39,7 +38,7 @@ public abstract class RyPluginMessages {
      * @param instance    The plugin instance.
      * @param proxyServer The proxy server.
      */
-    public RyPluginMessages(Plugin instance, ProxyServer proxyServer) {
+    public RyPluginMessages(Object instance, ProxyServer proxyServer) {
         this(instance, proxyServer, "custom");
     }
 
@@ -59,7 +58,7 @@ public abstract class RyPluginMessages {
      * @param proxyServer The proxy server.
      * @param identifier  The identifier the plugin will use.
      */
-    public RyPluginMessages(Plugin instance, ProxyServer proxyServer, String identifier) {
+    public RyPluginMessages(Object instance, ProxyServer proxyServer, String identifier) {
         this.proxyServer = proxyServer;
         this.identifier = MinecraftChannelIdentifier.from(identifier + ":main");
         this.instance = instance;

@@ -27,7 +27,7 @@ public abstract class RyFile {
     /**
      * The plugin's instance.
      */
-    private Plugin instance;
+    private Object instance;
     /**
      * The proxy server.
      */
@@ -74,7 +74,7 @@ public abstract class RyFile {
      * @param instance The plugin's instance.
      * @param name     The name of the config.
      */
-    public RyFile(Plugin instance, String name) {
+    public RyFile(Object instance, String name) {
         this (instance, name, RySetup.getPluginPath(), false, null);
     }
 
@@ -95,7 +95,7 @@ public abstract class RyFile {
      * @param name       The name of the plugin.
      * @param autoUpdate Should the config auto update?
      */
-    public RyFile(Plugin instance, String name, boolean autoUpdate) {
+    public RyFile(Object instance, String name, boolean autoUpdate) {
         this(instance, name, RySetup.getPluginPath(), autoUpdate, "config-version");
     }
 
@@ -120,7 +120,7 @@ public abstract class RyFile {
      * @param autoUpdate    Should the config auto update?
      * @param versionPath   The path which shows the version of the config.
      */
-    public RyFile(Plugin instance, String name, @DataDirectory Path dataDirectory, boolean autoUpdate, @Nullable String versionPath) {
+    public RyFile(Object instance, String name, @DataDirectory Path dataDirectory, boolean autoUpdate, @Nullable String versionPath) {
         this.fullName = name.endsWith(".yml") ? name : name + "yml";
         this.directory = dataDirectory.toFile();
         this.dataDirectory = dataDirectory;

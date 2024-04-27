@@ -25,13 +25,13 @@ public class RyTasksUtils {
 
     /**
      * Create a task that runs within a scheduler.
-     * @deprecated use {@link #runAsync(Plugin, Runnable)} instead.
+     * @deprecated use {@link #runAsync(Object, Runnable)} instead.
      *
      * @param plugin   The instance of the plugin you are using.
      * @param callable The Runnable code you would like to happen.
      */
     @Deprecated
-    public static void run(@NotNull Plugin plugin, Runnable callable) {
+    public static void run(@NotNull Object plugin, Runnable callable) {
         runAsync(plugin, callable);
     }
 
@@ -41,13 +41,13 @@ public class RyTasksUtils {
      * @param plugin   The instance of the plugin you are using.
      * @param callable The Runnable code you would like to happen.
      */
-    public static void runAsync(@NotNull Plugin plugin, Runnable callable) {
+    public static void runAsync(@NotNull Object plugin, Runnable callable) {
         server.getScheduler().buildTask(plugin, callable).schedule();
     }
 
     /**
      * Create a task that runs within a scheduler after a certain amount of time.
-     * @deprecated use {@link #runAsyncLater(Plugin, Runnable, long, TimeUnit)} instead.
+     * @deprecated use {@link #runAsyncLater(Object, Runnable, long, TimeUnit)} instead.
      *
      * @param plugin   The instance of the plugin you are using.
      * @param callable The Runnable code you would like to happen.
@@ -55,7 +55,7 @@ public class RyTasksUtils {
      * @param timeUnit The time unit.
      */
     @Deprecated
-    public static void runLater(@NotNull Plugin plugin, Runnable callable, long delay, TimeUnit timeUnit) {
+    public static void runLater(@NotNull Object plugin, Runnable callable, long delay, TimeUnit timeUnit) {
         runAsyncLater(plugin, callable, delay, timeUnit);
     }
 
@@ -67,13 +67,13 @@ public class RyTasksUtils {
      * @param delay    The delay before the runnable runs.
      * @param timeUnit The time unit.
      */
-    public static void runAsyncLater(@NotNull Plugin plugin, Runnable callable, long delay, TimeUnit timeUnit) {
+    public static void runAsyncLater(@NotNull Object plugin, Runnable callable, long delay, TimeUnit timeUnit) {
         server.getScheduler().buildTask(plugin, callable).delay(delay, timeUnit).schedule();
     }
 
     /**
      * Create a task that runs on a timer within a scheduler after a certain amount of time.
-     * @deprecated use {@link #runAsyncTimer(Plugin, Runnable, long, long, TimeUnit)} instead.
+     * @deprecated use {@link #runAsyncTimer(Object, Runnable, long, long, TimeUnit)} instead.
      *
      * @param plugin   The instance of the plugin you are using.
      * @param callable The Runnable code you would like to happen.
@@ -82,7 +82,7 @@ public class RyTasksUtils {
      * @param timeUnit The time unit.
      */
     @Deprecated
-    public static void runTimer(@NotNull Plugin plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
+    public static void runTimer(@NotNull Object plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
         runAsyncTimer(plugin, callable, delay, interval, timeUnit);
     }
 
@@ -95,7 +95,7 @@ public class RyTasksUtils {
      * @param interval The interval before the runnable runs again.
      * @param timeUnit The time unit.
      */
-    public static void runAsyncTimer(@NotNull Plugin plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
+    public static void runAsyncTimer(@NotNull Object plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
         server.getScheduler().buildTask(plugin, callable).delay(delay, timeUnit).repeat(interval, timeUnit).schedule();
     }
 
@@ -107,7 +107,7 @@ public class RyTasksUtils {
      * @param delay    The delay before the runnable repeats.
      * @param timeUnit The time unit.
      */
-    public static void runAsyncRepeat(@NotNull Plugin plugin, Runnable callable, long delay, TimeUnit timeUnit) {
+    public static void runAsyncRepeat(@NotNull Object plugin, Runnable callable, long delay, TimeUnit timeUnit) {
         server.getScheduler().buildTask(plugin, callable).repeat(delay, timeUnit).schedule();
     }
 
@@ -116,7 +116,7 @@ public class RyTasksUtils {
      *
      * @param plugin The instance of the plugin you are using.
      */
-    public static void cancelAll(@NotNull Plugin plugin) {
+    public static void cancelAll(@NotNull Object plugin) {
         Collection<ScheduledTask> tasks = server.getScheduler().tasksByPlugin(plugin);
 
         for (ScheduledTask task : tasks) {
