@@ -85,7 +85,9 @@ public class RyMessageUtils {
                 .replaceAll("&l", "<bold>")
                 .replaceAll("&k", "<obfuscated>")
                 .replaceAll("&m", "<strikethrough>")
-                .replaceAll("&n", "<underline>");
+                .replaceAll("&n", "<underline>")
+                .replaceAll("&o", "<italic>")
+                .replaceAll("&r", "<reset>");
 
         Component component = MiniMessage.miniMessage().deserialize(message);
         return component;
