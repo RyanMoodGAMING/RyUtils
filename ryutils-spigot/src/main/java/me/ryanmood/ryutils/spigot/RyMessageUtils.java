@@ -80,7 +80,8 @@ public class RyMessageUtils {
      * @return        a translated String
      */
     public static String translate(String message) {
-        return HEXUtils.colorify(message);
+        return HEXUtils.colorify(message)
+                .replace("%prefix%", getPrefix());
     }
 
     /**
@@ -280,13 +281,25 @@ public class RyMessageUtils {
      * @param message The message you wish for console to receive.
      */
     public static void sendConsole(boolean prefix, String message) {
-        if (prefix) {
-            if (getAudiences() != null) {
-                getAudiences().console().sendMessage(adventureTranslate(getPrefix() + message));
-            } else {
-                Bukkit.getConsoleSender().sendMessage(translate(getPrefix() + message));
-            }
+        if (prefix) message = getPrefix() + message;
+
+        if (getAudiences() != null) {
+            getAudiences().console().sendMessage(adventureTranslate(message));
         } else {
+            Bukkit.getConsoleSender().sendMessage(translate(message));
+        }
+    }
+
+    /**
+     * Send console multiple messages.
+     *
+     * @param prefix   If you would like the plugin prefix to be added at the beginning of the message.
+     * @param messages The messages you wish to send to console.
+     */
+    public static void sendConsole(boolean prefix, String... messages) {
+        for (String message : messages) {
+            if (prefix) message = getPrefix() + message;
+
             if (getAudiences() != null) {
                 getAudiences().console().sendMessage(adventureTranslate(message));
             } else {
@@ -301,48 +314,14 @@ public class RyMessageUtils {
      * @param prefix   If you would like the plugin prefix to be added at the beginning of the message.
      * @param messages The messages you wish to send to console.
      */
-    public static void sendConsole(boolean prefix, String... messages) {
-        if (prefix) {
-            for (String message : messages) {
-                if (getAudiences() != null) {
-                    getAudiences().console().sendMessage(adventureTranslate(getPrefix() + message));
-                } else {
-                    Bukkit.getConsoleSender().sendMessage(translate(getPrefix() + message));
-                }
-            }
-        } else {
-            for (String message : messages) {
-                if (getAudiences() != null) {
-                    getAudiences().console().sendMessage(adventureTranslate(message));
-                } else {
-                    Bukkit.getConsoleSender().sendMessage(translate(message));
-                }
-            }
-        }
-    }
-
-    /**
-     * Send console multiple messages.
-     *
-     * @param prefix   If you would like the plugin prefix to be added at the beginning of the message.
-     * @param messages The messages you wish to send to console.
-     */
     public static void sendConsole(boolean prefix, List<String> messages) {
-        if (prefix) {
-            for (String message : messages) {
-                if (getAudiences() != null) {
-                    getAudiences().console().sendMessage(adventureTranslate(getPrefix() + message));
-                } else {
-                    Bukkit.getConsoleSender().sendMessage(translate(getPrefix() + message));
-                }
-            }
-        } else {
-            for (String message : messages) {
-                if (getAudiences() != null) {
-                    getAudiences().console().sendMessage(adventureTranslate(message));
-                } else {
-                    Bukkit.getConsoleSender().sendMessage(translate(message));
-                }
+        for (String message : messages) {
+            if (prefix) message = getPrefix() + message;
+
+            if (getAudiences() != null) {
+                getAudiences().console().sendMessage(adventureTranslate(message));
+            } else {
+                Bukkit.getConsoleSender().sendMessage(translate(message));
             }
         }
     }

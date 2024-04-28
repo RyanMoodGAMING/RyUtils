@@ -273,14 +273,26 @@ public class RyMessageUtils {
      * @param message The message you wish for console to receive.
      */
     public static void sendConsole(boolean prefix, String message) {
-        if (prefix) {
-            if (getAudiences() != null) {
-                getAudiences().console().sendMessage(adventureTranslate(getPrefix() + message));
-            } else {
-                BaseComponent[] text = TextComponent.fromLegacyText(translate(getPrefix() + message));
-                ProxyServer.getInstance().getConsole().sendMessage(text);
-            }
+        if (prefix) message = getPrefix() + message;
+
+        if (getAudiences() != null) {
+            getAudiences().console().sendMessage(adventureTranslate(message));
         } else {
+            BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
+            ProxyServer.getInstance().getConsole().sendMessage(text);
+        }
+    }
+
+    /**
+     * Send console multiple messages.
+     *
+     * @param prefix   If you would like the plugin prefix to be added at the beginning of the message.
+     * @param messages The messages you wish to send to console.
+     */
+    public static void sendConsole(boolean prefix, String... messages) {
+        for (String message : messages) {
+            if (prefix) message = getPrefix() + message;
+
             if (getAudiences() != null) {
                 getAudiences().console().sendMessage(adventureTranslate(message));
             } else {
@@ -296,52 +308,15 @@ public class RyMessageUtils {
      * @param prefix   If you would like the plugin prefix to be added at the beginning of the message.
      * @param messages The messages you wish to send to console.
      */
-    public static void sendConsole(boolean prefix, String... messages) {
-        if (prefix) {
-            for (String message : messages) {
-                if (getAudiences() != null) {
-                    getAudiences().console().sendMessage(adventureTranslate(getPrefix() + message));
-                } else {
-                    BaseComponent[] text = TextComponent.fromLegacyText(translate(getPrefix() + message));
-                    ProxyServer.getInstance().getConsole().sendMessage(text);
-                }
-            }
-        } else {
-            for (String message : messages) {
-                if (getAudiences() != null) {
-                    getAudiences().console().sendMessage(adventureTranslate(message));
-                } else {
-                    BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
-                    ProxyServer.getInstance().getConsole().sendMessage(text);
-                }
-            }
-        }
-    }
-
-    /**
-     * Send console multiple messages.
-     *
-     * @param prefix   If you would like the plugin prefix to be added at the beginning of the message.
-     * @param messages The messages you wish to send to console.
-     */
     public static void sendConsole(boolean prefix, List<String> messages) {
-        if (prefix) {
-            for (String message : messages) {
-                if (getAudiences() != null) {
-                    getAudiences().console().sendMessage(adventureTranslate(getPrefix() + message));
-                } else {
-                    BaseComponent[] text = TextComponent.fromLegacyText(translate(getPrefix() + message));
-                    ProxyServer.getInstance().getConsole().sendMessage(text);
-                }
-            }
-        } else {
-            for (String message : messages) {
-                if (getAudiences() != null) {
-                    getAudiences().console().sendMessage(adventureTranslate(message));
-                } else {
-                    BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
-                    ProxyServer.getInstance().getConsole().sendMessage(text);
-                }
+        for (String message : messages) {
+            if (prefix) message = getPrefix() + message;
+
+            if (getAudiences() != null) {
+                getAudiences().console().sendMessage(adventureTranslate(message));
+            } else {
+                BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
+                ProxyServer.getInstance().getConsole().sendMessage(text);
             }
         }
     }
