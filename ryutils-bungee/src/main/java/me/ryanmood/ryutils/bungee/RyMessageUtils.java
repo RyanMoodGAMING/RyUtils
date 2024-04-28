@@ -32,7 +32,7 @@ public class RyMessageUtils {
     private static Plugin instance = RySetup.getPluginInstance();
     @Setter
     @Getter
-    private static BungeeAudiences audiences;
+    private static BungeeAudiences audiences = RySetup.getAudiences();
 
     @Getter
     @Setter

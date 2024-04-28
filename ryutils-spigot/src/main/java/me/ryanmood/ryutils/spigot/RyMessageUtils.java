@@ -31,7 +31,7 @@ public class RyMessageUtils {
     private static Plugin instance = RySetup.getPluginInstance();
     @Setter
     @Getter
-    private static BukkitAudiences audiences;
+    private static BukkitAudiences audiences = RySetup.getAudiences();
 
     @Getter
     @Setter

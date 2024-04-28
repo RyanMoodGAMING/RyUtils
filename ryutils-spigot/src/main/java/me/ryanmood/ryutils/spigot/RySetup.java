@@ -2,6 +2,7 @@ package me.ryanmood.ryutils.spigot;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /*
@@ -23,6 +24,7 @@ public class RySetup {
      */
     public RySetup(JavaPlugin pluginInstance, boolean debug) {
         setPluginInstance(pluginInstance);
+        setAudiences(BukkitAudiences.create(pluginInstance));
         setDebug(debug);
     }
 
@@ -32,6 +34,13 @@ public class RySetup {
     @Getter
     @Setter
     private static JavaPlugin pluginInstance = null;
+
+    /**
+     * The adventure api audience.
+     */
+    @Getter
+    @Setter
+    private static BukkitAudiences audiences = null;
 
     /**
      * Should the plugin send debug messages?
