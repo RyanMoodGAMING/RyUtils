@@ -58,7 +58,7 @@ public class RyMessageUtils {
      * @param message The message you wish to be translated.
      * @return        a translated String
      */
-    public static String spigotTranslate(Player player, String message) {
+    public static String translate(Player player, String message) {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             String PAPI = PlaceholderAPI.setPlaceholders(player, message)
                     .replace("%prefix%", getPrefix())
@@ -79,7 +79,7 @@ public class RyMessageUtils {
      * @param message The message you wish to be translated.
      * @return        a translated String
      */
-    public static String spigotTranslate(String message) {
+    public static String translate(String message) {
         return HEXUtils.colorify(message);
     }
 
@@ -89,8 +89,8 @@ public class RyMessageUtils {
      * @param messages The string list you wish to be translated.
      * @return         a string list of translated messages.
      */
-    public static List<String> spigotTranslate(@NotNull List<String> messages) {
-        return messages.stream().map(RyMessageUtils::spigotTranslate).collect(Collectors.toList());
+    public static List<String> translate(@NotNull List<String> messages) {
+        return messages.stream().map(RyMessageUtils::translate).collect(Collectors.toList());
     }
 
     /**
@@ -191,7 +191,7 @@ public class RyMessageUtils {
         if (getAudiences() != null) {
             getAudiences().player(player).sendMessage(adventureTranslate(player, message));
         } else {
-            player.sendMessage(spigotTranslate(player, message));
+            player.sendMessage(translate(player, message));
         }
     }
 
@@ -206,7 +206,7 @@ public class RyMessageUtils {
             if (getAudiences() != null) {
                 getAudiences().player(player).sendMessage(adventureTranslate(player, message));
             } else {
-                player.sendMessage(spigotTranslate(player, message));
+                player.sendMessage(translate(player, message));
             }
         }
     }
@@ -222,7 +222,7 @@ public class RyMessageUtils {
             if (getAudiences() != null) {
                 getAudiences().player(player).sendMessage(adventureTranslate(player, message));
             } else {
-                player.sendMessage(spigotTranslate(player, message));
+                player.sendMessage(translate(player, message));
             }
         }
     }
@@ -237,7 +237,7 @@ public class RyMessageUtils {
         if (getAudiences() != null) {
             getAudiences().sender(sender).sendMessage(adventureTranslate(message));
         } else {
-            sender.sendMessage(spigotTranslate(message));
+            sender.sendMessage(translate(message));
         }
     }
 
@@ -252,7 +252,7 @@ public class RyMessageUtils {
             if (getAudiences() != null) {
                 getAudiences().sender(sender).sendMessage(adventureTranslate(message));
             } else {
-                sender.sendMessage(spigotTranslate(message));
+                sender.sendMessage(translate(message));
             }
         }
     }
@@ -268,7 +268,7 @@ public class RyMessageUtils {
             if (getAudiences() != null) {
                 getAudiences().sender(sender).sendMessage(adventureTranslate(message));
             } else {
-                sender.sendMessage(spigotTranslate(message));
+                sender.sendMessage(translate(message));
             }
         }
     }
@@ -284,13 +284,13 @@ public class RyMessageUtils {
             if (getAudiences() != null) {
                 getAudiences().console().sendMessage(adventureTranslate(getPrefix() + message));
             } else {
-                Bukkit.getConsoleSender().sendMessage(spigotTranslate(getPrefix() + message));
+                Bukkit.getConsoleSender().sendMessage(translate(getPrefix() + message));
             }
         } else {
             if (getAudiences() != null) {
                 getAudiences().console().sendMessage(adventureTranslate(message));
             } else {
-                Bukkit.getConsoleSender().sendMessage(spigotTranslate(message));
+                Bukkit.getConsoleSender().sendMessage(translate(message));
             }
         }
     }
@@ -307,7 +307,7 @@ public class RyMessageUtils {
                 if (getAudiences() != null) {
                     getAudiences().console().sendMessage(adventureTranslate(getPrefix() + message));
                 } else {
-                    Bukkit.getConsoleSender().sendMessage(spigotTranslate(getPrefix() + message));
+                    Bukkit.getConsoleSender().sendMessage(translate(getPrefix() + message));
                 }
             }
         } else {
@@ -315,7 +315,7 @@ public class RyMessageUtils {
                 if (getAudiences() != null) {
                     getAudiences().console().sendMessage(adventureTranslate(message));
                 } else {
-                    Bukkit.getConsoleSender().sendMessage(spigotTranslate(message));
+                    Bukkit.getConsoleSender().sendMessage(translate(message));
                 }
             }
         }
@@ -333,7 +333,7 @@ public class RyMessageUtils {
                 if (getAudiences() != null) {
                     getAudiences().console().sendMessage(adventureTranslate(getPrefix() + message));
                 } else {
-                    Bukkit.getConsoleSender().sendMessage(spigotTranslate(getPrefix() + message));
+                    Bukkit.getConsoleSender().sendMessage(translate(getPrefix() + message));
                 }
             }
         } else {
@@ -341,7 +341,7 @@ public class RyMessageUtils {
                 if (getAudiences() != null) {
                     getAudiences().console().sendMessage(adventureTranslate(message));
                 } else {
-                    Bukkit.getConsoleSender().sendMessage(spigotTranslate(message));
+                    Bukkit.getConsoleSender().sendMessage(translate(message));
                 }
             }
         }
@@ -360,7 +360,7 @@ public class RyMessageUtils {
                 if (getAudiences() != null) {
                     getAudiences().player(online).sendMessage(adventureTranslate(player, message));
                 } else {
-                    online.sendMessage(spigotTranslate(player, message));
+                    online.sendMessage(translate(player, message));
                 }
             }
         }
@@ -379,7 +379,7 @@ public class RyMessageUtils {
                 if (getAudiences() != null) {
                     getAudiences().player(online).sendMessage(adventureTranslate(player, message));
                 } else {
-                    online.sendMessage(spigotTranslate(player, message));
+                    online.sendMessage(translate(player, message));
                 }
             }
         }
@@ -394,7 +394,7 @@ public class RyMessageUtils {
         if (getAudiences() != null) {
             getAudiences().players().sendMessage(adventureTranslate(message));
         } else {
-            Bukkit.getConsoleSender().sendMessage(spigotTranslate(message));
+            Bukkit.getConsoleSender().sendMessage(translate(message));
         }
     }
 
@@ -408,7 +408,7 @@ public class RyMessageUtils {
         if (getAudiences() != null) {
             getAudiences().players().sendMessage(adventureTranslate(player, message));
         } else {
-            Bukkit.getConsoleSender().sendMessage(spigotTranslate(player, message));
+            Bukkit.getConsoleSender().sendMessage(translate(player, message));
         }
     }
 

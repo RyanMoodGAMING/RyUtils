@@ -48,7 +48,7 @@ public abstract class Command extends org.bukkit.command.Command implements Comp
 
         this.name = name;
         this.argsLength = argsLength;
-        this.usage = RyMessageUtils.spigotTranslate(usage);
+        this.usage = RyMessageUtils.translate(usage);
 
         this.aliases = new HashSet<>();
         this.aliases.add(name);
@@ -143,7 +143,7 @@ public abstract class Command extends org.bukkit.command.Command implements Comp
      */
     @Override
     public Command setUsage(String usage) {
-        this.usage = RyMessageUtils.spigotTranslate(usage);
+        this.usage = RyMessageUtils.translate(usage);
         return this;
     }
 

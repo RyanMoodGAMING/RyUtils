@@ -209,7 +209,7 @@ public abstract class RyPluginMessages implements PluginMessageListener {
 
         output.writeUTF("Message");
         output.writeUTF(receiversName);
-        output.writeUTF(RyMessageUtils.spigotTranslate(message));
+        output.writeUTF(RyMessageUtils.translate(message));
 
         send(player, output);
     }
@@ -321,7 +321,7 @@ public abstract class RyPluginMessages implements PluginMessageListener {
 
         output.writeUTF("KickPlayer");
         output.writeUTF(targetName);
-        output.writeUTF(RyMessageUtils.spigotTranslate(reason));
+        output.writeUTF(RyMessageUtils.translate(reason));
 
         send(player, output);
     }
@@ -336,7 +336,7 @@ public abstract class RyPluginMessages implements PluginMessageListener {
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
 
         output.writeUTF("RyUtils-KickAll");
-        output.writeUTF(RyMessageUtils.spigotTranslate(reason));
+        output.writeUTF(RyMessageUtils.translate(reason));
 
         send(player, output);
     }
