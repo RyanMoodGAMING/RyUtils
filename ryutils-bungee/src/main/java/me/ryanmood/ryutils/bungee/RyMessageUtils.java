@@ -2,6 +2,10 @@ package me.ryanmood.ryutils.bungee;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -25,7 +29,10 @@ import java.util.stream.Collectors;
 public class RyMessageUtils {
 
     @Setter
-    private static Plugin instance;
+    private static Plugin instance = RySetup.getPluginInstance();
+    @Setter
+    @Getter
+    private static BungeeAudiences audiences;
 
     @Getter
     @Setter
@@ -40,14 +47,19 @@ public class RyMessageUtils {
     @Setter
     private static String supportMessage = "Please contact the plugin author for support.";
 
+    public RyMessageUtils(Plugin plugin) {
+        this.instance = plugin;
+        this.audiences = BungeeAudiences.create(plugin);
+    }
+
     /**
-     * Translates the message given and for colours, PAPI, %prefix% and %player%.
+     * Translates the message given and for colours using Bungee API, %prefix% and %player%.
      *
      * @param player  The player that is being translated (%player% and PAPI)
      * @param message The message you wish to be translated.
      * @return        a translated String
      */
-    private static String translate(ProxiedPlayer player, String message) {
+    public static String translate(ProxiedPlayer player, String message) {
 
         return ChatColor.translateAlternateColorCodes('&', message)
                 .replace("%prefix%", getPrefix())
@@ -56,7 +68,7 @@ public class RyMessageUtils {
     }
 
     /**
-     * Translates the message given for colours and %prefix%.
+     * Translates the message given for colours using Bungee API and %prefix%.
      *
      * @param message The message you wish to be translated.
      * @return        a translated String
@@ -67,13 +79,93 @@ public class RyMessageUtils {
     }
 
     /**
-     * Translates the string list for colours and %prefix%.
+     * Translates the string list for colours using Bungee API and %prefix%.
      *
      * @param messages The string list you wish to be translated.
      * @return         a string list of translated messages.
      */
-    private static List<String> translate(List<String> messages) {
+    public static List<String> translate(List<String> messages) {
         return messages.stream().map(RyMessageUtils::translate).collect(Collectors.toList());
+    }
+
+    /**
+     * Translates the message given and for colours using Adventure API, %prefix% and %player%.
+     *
+     * @param player  The player that is being translated (%player% and PAPI)
+     * @param message The message you wish to be translated.
+     * @return        a translated Component
+     */
+    public static Component adventureTranslate(ProxiedPlayer player, String message) {
+        message = message
+                .replace("%prefix%", getPrefix())
+                .replace("%player%", player.getName())
+                .replaceAll("&1", "<dark_blue>")
+                .replaceAll("&2", "<dark_green>")
+                .replaceAll("&3", "<dark_aqua>")
+                .replaceAll("&4", "<dark_red>")
+                .replaceAll("&5", "<dark_purple>")
+                .replaceAll("&6", "<gold>")
+                .replaceAll("&7", "<gray>")
+                .replaceAll("&8", "<dark_gray>")
+                .replaceAll("&9", "<blue>")
+                .replaceAll("&a", "<green>")
+                .replaceAll("&b", "<aqua>")
+                .replaceAll("&c", "<red>")
+                .replaceAll("&d", "<light_purple>")
+                .replaceAll("&e", "<yellow>")
+                .replaceAll("&f", "<white>")
+                .replaceAll("&l", "<bold>")
+                .replaceAll("&k", "<obfuscated>")
+                .replaceAll("&m", "<strikethrough>")
+                .replaceAll("&n", "<underline>");
+
+        Component component = MiniMessage.miniMessage().deserialize(message);
+
+        return component;
+    }
+
+    /**
+     * Translates the message given and for colours using Adventure API, %prefix%.
+     *
+     * @param message The message you wish to be translated.
+     * @return        a translated Component
+     */
+    public static Component adventureTranslate(String message) {
+        message = message
+                .replace("%prefix%", getPrefix())
+                .replaceAll("&1", "<dark_blue>")
+                .replaceAll("&2", "<dark_green>")
+                .replaceAll("&3", "<dark_aqua>")
+                .replaceAll("&4", "<dark_red>")
+                .replaceAll("&5", "<dark_purple>")
+                .replaceAll("&6", "<gold>")
+                .replaceAll("&7", "<gray>")
+                .replaceAll("&8", "<dark_gray>")
+                .replaceAll("&9", "<blue>")
+                .replaceAll("&a", "<green>")
+                .replaceAll("&b", "<aqua>")
+                .replaceAll("&c", "<red>")
+                .replaceAll("&d", "<light_purple>")
+                .replaceAll("&e", "<yellow>")
+                .replaceAll("&f", "<white>")
+                .replaceAll("&l", "<bold>")
+                .replaceAll("&k", "<obfuscated>")
+                .replaceAll("&m", "<strikethrough>")
+                .replaceAll("&n", "<underline>");
+
+        Component component = MiniMessage.miniMessage().deserialize(message);
+
+        return component;
+    }
+
+    /**
+     * Translates the string list for colours using Adventure API and %prefix%.
+     *
+     * @param messages The string list you wish to be translated.
+     * @return         a string list of translated messages.
+     */
+    public static List<Component> adventureTranslate(List<String> messages) {
+        return messages.stream().map(RyMessageUtils::adventureTranslate).collect(Collectors.toList());
     }
 
     /**
@@ -83,8 +175,12 @@ public class RyMessageUtils {
      * @param message The message you wish to send the player.
      */
     public static void sendPlayer(ProxiedPlayer player, String message) {
-        BaseComponent[] text = TextComponent.fromLegacyText(translate(player, message));
-        player.sendMessage(text);
+        if (getAudiences() != null) {
+            getAudiences().player(player).sendMessage(adventureTranslate(player, message));
+        } else {
+            BaseComponent[] text = TextComponent.fromLegacyText(translate(player, message));
+            player.sendMessage(text);
+        }
     }
 
     /**
@@ -95,8 +191,12 @@ public class RyMessageUtils {
      */
     public static void sendPlayer(ProxiedPlayer player, String... messages) {
         for (String message : messages) {
-            BaseComponent[] text = TextComponent.fromLegacyText(translate(player, message));
-            player.sendMessage(text);
+            if (getAudiences() != null) {
+                getAudiences().player(player).sendMessage(adventureTranslate(player, message));
+            } else {
+                BaseComponent[] text = TextComponent.fromLegacyText(translate(player, message));
+                player.sendMessage(text);
+            }
         }
     }
 
@@ -108,8 +208,12 @@ public class RyMessageUtils {
      */
     public static void sendPlayer(ProxiedPlayer player, List<String> messages) {
         for (String message : messages) {
-            BaseComponent[] text = TextComponent.fromLegacyText(translate(player, message));
-            player.sendMessage(text);
+            if (getAudiences() != null) {
+                getAudiences().player(player).sendMessage(adventureTranslate(player, message));
+            } else {
+                BaseComponent[] text = TextComponent.fromLegacyText(translate(player, message));
+                player.sendMessage(text);
+            }
         }
     }
 
@@ -120,8 +224,12 @@ public class RyMessageUtils {
      * @param message The message you wish to send to the sender.
      */
     public static void sendSender(CommandSender sender, String message) {
-        BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
-        sender.sendMessage(text);
+        if (getAudiences() != null) {
+            getAudiences().sender(sender).sendMessage(adventureTranslate(message));
+        } else {
+            BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
+            sender.sendMessage(text);
+        }
     }
 
     /**
@@ -132,8 +240,12 @@ public class RyMessageUtils {
      */
     public static void sendSender(CommandSender sender, String... messages) {
         for (String message : messages) {
-            BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
-            sender.sendMessage(text);
+            if (getAudiences() != null) {
+                getAudiences().sender(sender).sendMessage(adventureTranslate(message));
+            } else {
+                BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
+                sender.sendMessage(text);
+            }
         }
     }
 
@@ -145,8 +257,12 @@ public class RyMessageUtils {
      */
     public static void sendSender(CommandSender sender, List<String> messages) {
         for (String message : messages) {
-            BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
-            sender.sendMessage(text);
+            if (getAudiences() != null) {
+                getAudiences().sender(sender).sendMessage(adventureTranslate(message));
+            } else {
+                BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
+                sender.sendMessage(text);
+            }
         }
     }
 
@@ -158,11 +274,19 @@ public class RyMessageUtils {
      */
     public static void sendConsole(boolean prefix, String message) {
         if (prefix) {
-            BaseComponent[] text = TextComponent.fromLegacyText(translate(getPrefix() + message));
-            ProxyServer.getInstance().getConsole().sendMessage(text);
+            if (getAudiences() != null) {
+                getAudiences().console().sendMessage(adventureTranslate(getPrefix() + message));
+            } else {
+                BaseComponent[] text = TextComponent.fromLegacyText(translate(getPrefix() + message));
+                ProxyServer.getInstance().getConsole().sendMessage(text);
+            }
         } else {
-            BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
-            ProxyServer.getInstance().getConsole().sendMessage(text);
+            if (getAudiences() != null) {
+                getAudiences().console().sendMessage(adventureTranslate(message));
+            } else {
+                BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
+                ProxyServer.getInstance().getConsole().sendMessage(text);
+            }
         }
     }
 
@@ -175,13 +299,21 @@ public class RyMessageUtils {
     public static void sendConsole(boolean prefix, String... messages) {
         if (prefix) {
             for (String message : messages) {
-                BaseComponent[] text = TextComponent.fromLegacyText(translate(getPrefix() + message));
-                ProxyServer.getInstance().getConsole().sendMessage(text);
+                if (getAudiences() != null) {
+                    getAudiences().console().sendMessage(adventureTranslate(getPrefix() + message));
+                } else {
+                    BaseComponent[] text = TextComponent.fromLegacyText(translate(getPrefix() + message));
+                    ProxyServer.getInstance().getConsole().sendMessage(text);
+                }
             }
         } else {
             for (String message : messages) {
-                BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
-                ProxyServer.getInstance().getConsole().sendMessage(text);
+                if (getAudiences() != null) {
+                    getAudiences().console().sendMessage(adventureTranslate(message));
+                } else {
+                    BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
+                    ProxyServer.getInstance().getConsole().sendMessage(text);
+                }
             }
         }
     }
@@ -195,13 +327,21 @@ public class RyMessageUtils {
     public static void sendConsole(boolean prefix, List<String> messages) {
         if (prefix) {
             for (String message : messages) {
-                BaseComponent[] text = TextComponent.fromLegacyText(translate(getPrefix() + message));
-                ProxyServer.getInstance().getConsole().sendMessage(text);
+                if (getAudiences() != null) {
+                    getAudiences().console().sendMessage(adventureTranslate(getPrefix() + message));
+                } else {
+                    BaseComponent[] text = TextComponent.fromLegacyText(translate(getPrefix() + message));
+                    ProxyServer.getInstance().getConsole().sendMessage(text);
+                }
             }
         } else {
             for (String message : messages) {
-                BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
-                ProxyServer.getInstance().getConsole().sendMessage(text);
+                if (getAudiences() != null) {
+                    getAudiences().console().sendMessage(adventureTranslate(message));
+                } else {
+                    BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
+                    ProxyServer.getInstance().getConsole().sendMessage(text);
+                }
             }
         }
     }
@@ -216,8 +356,12 @@ public class RyMessageUtils {
     public static void broadcast(ProxiedPlayer player, String permission, String message) {
         for (ProxiedPlayer online : ProxyServer.getInstance().getPlayers()) {
             if (online.hasPermission(permission)) {
-                BaseComponent[] text = TextComponent.fromLegacyText(translate(player, message));
-                online.sendMessage(text);
+                if (getAudiences() != null) {
+                    getAudiences().player(player).sendMessage(adventureTranslate(player, message));
+                } else {
+                    BaseComponent[] text = TextComponent.fromLegacyText(translate(player, message));
+                    online.sendMessage(text);
+                }
             }
         }
     }
@@ -229,8 +373,12 @@ public class RyMessageUtils {
      * @param message    The message you wish to be broadcast.
      */
     public static void broadcast(ProxiedPlayer player, String message) {
-        BaseComponent[] text = TextComponent.fromLegacyText(translate(player, message));
-        ProxyServer.getInstance().broadcast(text);
+        if (getAudiences() != null) {
+            getAudiences().players().sendMessage(adventureTranslate(player, message));
+        } else {
+            BaseComponent[] text = TextComponent.fromLegacyText(translate(player, message));
+            ProxyServer.getInstance().broadcast(text);
+        }
     }
 
     /**
@@ -239,8 +387,12 @@ public class RyMessageUtils {
      * @param message The message you wish to be sent to the players.
      */
     public static void broadcast(String message) {
-        BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
-        ProxyServer.getInstance().broadcast(text);
+        if (getAudiences() != null) {
+            getAudiences().players().sendMessage(adventureTranslate(message));
+        } else {
+            BaseComponent[] text = TextComponent.fromLegacyText(translate(message));
+            ProxyServer.getInstance().broadcast(text);
+        }
     }
 
     /**

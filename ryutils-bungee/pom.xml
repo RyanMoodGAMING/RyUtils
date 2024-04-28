@@ -46,6 +46,10 @@
                                     <pattern>com.google.gson</pattern>
                                     <shadedPattern>me.ryanmood.ryutils.bungee.lib.gson</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>net.kyori.adventure</pattern>
+                                    <shadedPattern>me.ryanmood.ryutils.bungee.lib.adventure</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -90,6 +94,18 @@
             <artifactId>mongodb-driver-sync</artifactId>
             <version>5.0.1</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-minimessage</artifactId>
+            <version>4.16.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bungeecord</artifactId>
+            <version>4.3.2</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
