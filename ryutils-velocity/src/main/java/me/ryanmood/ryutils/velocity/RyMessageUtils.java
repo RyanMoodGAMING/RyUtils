@@ -85,7 +85,7 @@ public class RyMessageUtils {
                 .replaceAll("&l", "<bold>")
                 .replaceAll("&k", "<obfuscated>")
                 .replaceAll("&m", "<strikethrough>")
-                .replaceAll("&n", "<underline>")
+                .replaceAll("&n", "<underlined>")
                 .replaceAll("&o", "<italic>")
                 .replaceAll("&r", "<reset>");
 
