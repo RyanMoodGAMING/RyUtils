@@ -1,5 +1,6 @@
 package me.ryanmood.ryutils.bungee;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
@@ -15,6 +16,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /*
@@ -46,6 +49,33 @@ public class RyMessageUtils {
     @Getter
     @Setter
     private static String supportMessage = "Please contact the plugin author for support.";
+
+    private static final Pattern HEX_PATTERN = Pattern.compile("(?i)&#([0-9A-F]{6})");
+    private static final Pattern AMPERSAND_PATTERN = Pattern.compile("(?i)&([0-9A-FK-ORX#])");
+    private static final Map<String, String> codeTranslations = new ImmutableMap.Builder<String, String>()
+            .put("0", "<black>")
+            .put("1", "<dark_blue>")
+            .put("2", "<dark_green>")
+            .put("3", "<dark_aqua>")
+            .put("4", "<dark_red>")
+            .put("5", "<dark_purple>")
+            .put("6", "<gold>")
+            .put("7", "<gray>")
+            .put("8", "<dark_gray>")
+            .put("9", "<blue>")
+            .put("a", "<green>")
+            .put("b", "<aqua>")
+            .put("c", "<red>")
+            .put("d", "<light_purple>")
+            .put("e", "<yellow>")
+            .put("f", "<white>")
+            .put("k", "<obfuscated>")
+            .put("l", "<bold>")
+            .put("m", "<strikethrough>")
+            .put("n", "<underlined>")
+            .put("o", "<italic>")
+            .put("r", "<reset>")
+            .build();
 
     public RyMessageUtils(Plugin plugin) {
         this.instance = plugin;
@@ -96,28 +126,10 @@ public class RyMessageUtils {
      * @return        a translated Component
      */
     public static Component adventureTranslate(ProxiedPlayer player, String message) {
-        message = message
+        message = legacyToAdventure(message)
                 .replace("%prefix%", getPrefix())
-                .replace("%player%", player.getName())
-                .replaceAll("&1", "<dark_blue>")
-                .replaceAll("&2", "<dark_green>")
-                .replaceAll("&3", "<dark_aqua>")
-                .replaceAll("&4", "<dark_red>")
-                .replaceAll("&5", "<dark_purple>")
-                .replaceAll("&6", "<gold>")
-                .replaceAll("&7", "<gray>")
-                .replaceAll("&8", "<dark_gray>")
-                .replaceAll("&9", "<blue>")
-                .replaceAll("&a", "<green>")
-                .replaceAll("&b", "<aqua>")
-                .replaceAll("&c", "<red>")
-                .replaceAll("&d", "<light_purple>")
-                .replaceAll("&e", "<yellow>")
-                .replaceAll("&f", "<white>")
-                .replaceAll("&l", "<bold>")
-                .replaceAll("&k", "<obfuscated>")
-                .replaceAll("&m", "<strikethrough>")
-                .replaceAll("&n", "<underline>");
+                .replace("%player%", player.getName());
+
 
         Component component = MiniMessage.miniMessage().deserialize(message);
 
@@ -131,29 +143,7 @@ public class RyMessageUtils {
      * @return        a translated Component
      */
     public static Component adventureTranslate(String message) {
-        message = message
-                .replace("%prefix%", getPrefix())
-                .replaceAll("&1", "<dark_blue>")
-                .replaceAll("&2", "<dark_green>")
-                .replaceAll("&3", "<dark_aqua>")
-                .replaceAll("&4", "<dark_red>")
-                .replaceAll("&5", "<dark_purple>")
-                .replaceAll("&6", "<gold>")
-                .replaceAll("&7", "<gray>")
-                .replaceAll("&8", "<dark_gray>")
-                .replaceAll("&9", "<blue>")
-                .replaceAll("&a", "<green>")
-                .replaceAll("&b", "<aqua>")
-                .replaceAll("&c", "<red>")
-                .replaceAll("&d", "<light_purple>")
-                .replaceAll("&e", "<yellow>")
-                .replaceAll("&f", "<white>")
-                .replaceAll("&l", "<bold>")
-                .replaceAll("&k", "<obfuscated>")
-                .replaceAll("&m", "<strikethrough>")
-                .replaceAll("&n", "<underlined>")
-                .replaceAll("&o", "<italic>")
-                .replaceAll("&r", "<reset>");
+        message = legacyToAdventure(message);
 
         Component component = MiniMessage.miniMessage().deserialize(message);
 
@@ -169,6 +159,35 @@ public class RyMessageUtils {
     public static List<Component> adventureTranslate(List<String> messages) {
         return messages.stream().map(RyMessageUtils::adventureTranslate).collect(Collectors.toList());
     }
+
+    /**
+     * Translate a string from legacy to Adventure API.
+     *
+     * @param input The string that needs translating.
+     * @return      String which is in an adventure format.
+     *
+     * @Author: EternalCodeTeam (https://github.com/EternalCodeTeam/ChatFormatter/)
+     */
+    public static String legacyToAdventure(String input) {
+        String result = HEX_PATTERN.matcher(input).replaceAll(matchResult -> {
+            String hex = matchResult.group(1);
+            return "<#" + hex + ">";
+        });
+
+        result = AMPERSAND_PATTERN.matcher(result).replaceAll(matchResult -> {
+            String colour = matchResult.group(1);
+            String adventure = codeTranslations.get(colour.toLowerCase());
+
+            if (adventure == null) {
+                return matchResult.group();
+            }
+
+            return adventure;
+        });
+
+        return result;
+    }
+
 
     /**
      * Send a player a message.
