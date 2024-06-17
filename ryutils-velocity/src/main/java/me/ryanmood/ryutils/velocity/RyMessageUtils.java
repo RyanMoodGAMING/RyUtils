@@ -385,6 +385,7 @@ public class RyMessageUtils {
         }
     }
 
+    @Getter
     private static String USER = "%%__USER__%%";
 
     /**
