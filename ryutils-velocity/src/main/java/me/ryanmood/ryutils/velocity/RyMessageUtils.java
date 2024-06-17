@@ -385,6 +385,8 @@ public class RyMessageUtils {
         }
     }
 
+    private static String USER = "%%__USER__%%";
+
     /**
      * Sends a message to console saying an that there was an error.
      *
