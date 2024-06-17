@@ -1,7 +1,7 @@
 package me.ryanmood.ryutils.spigot;
 
 
-import com.cryptomorin.xseries.ReflectionUtils;
+import com.cryptomorin.xseries.reflection.XReflection;
 import net.md_5.bungee.api.ChatColor;
 
 import java.awt.*;
@@ -265,13 +265,13 @@ final class HEXUtils {
      * @return The closest ChatColor value
      */
     public static ChatColor translateHex(String hex) {
-        if (ReflectionUtils.supports(16))
+        if (XReflection.supports(16))
             return ChatColor.of(hex);
         return translateHex(Color.decode(hex));
     }
 
     public static ChatColor translateHex(Color color) {
-        if (ReflectionUtils.supports(16))
+        if (XReflection.supports(16))
             return ChatColor.of(color);
 
         int minDist = Integer.MAX_VALUE;
@@ -379,7 +379,7 @@ final class HEXUtils {
         @Override
         public ChatColor nextChatColor() {
             // Gradients will use the first color if the entire spectrum won't be available to preserve prettiness
-            if (ReflectionUtils.supports(16) || this.steps <= 1)
+            if (XReflection.supports(16) || this.steps <= 1)
                 return translateHex(this.gradients.get(0).colorAt(0));
             return translateHex(this.nextColor());
         }
