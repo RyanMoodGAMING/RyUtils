@@ -60,7 +60,8 @@ public abstract class RyPluginMessages {
      */
     public RyPluginMessages(Object instance, ProxyServer proxyServer, String identifier) {
         this.proxyServer = proxyServer;
-        this.identifier = MinecraftChannelIdentifier.from(identifier + ":main");
+        String updatedId = identifier + ":main";
+        this.identifier = MinecraftChannelIdentifier.from(updatedId);
         this.instance = instance;
 
         proxyServer.getEventManager().register(instance, this);
