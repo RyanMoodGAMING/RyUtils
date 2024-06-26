@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -140,10 +141,7 @@ public abstract class RyFile {
             } else {
                 this.config = YamlDocument.create(new File(dataDirectory.toFile(), this.fullName),
                         getClass().getResourceAsStream("/" + this.fullName),
-                        GeneralSettings.DEFAULT,
-                        LoaderSettings.builder().setAutoUpdate(false).build(),
-                        DumperSettings.DEFAULT,
-                        UpdaterSettings.builder().build());
+                        GeneralSettings.DEFAULT);
             }
             this.file = this.config.getFile();
           //  this.config.update();
