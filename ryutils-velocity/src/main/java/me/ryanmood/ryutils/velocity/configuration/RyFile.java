@@ -147,6 +147,7 @@ public abstract class RyFile {
             this.file = this.config.getFile();
             this.config.update();
             this.config.save();
+            this.loadConfig();
         } catch (IOException exception) {
             RyMessageUtils.sendPluginError("An error occurred while creating " + this.getFullName(), exception, RySetup.isDebug(), true);
         }
