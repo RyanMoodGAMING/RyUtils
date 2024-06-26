@@ -164,6 +164,7 @@ public abstract class RyFile {
     public void saveFile() {
         try {
             this.config.save(this.file);
+            this.loadConfig();
         } catch (Exception exception) {
             RyMessageUtils.sendPluginError("An error occurred while saving " + this.fullName, exception, RySetup.isDebug());
         }
@@ -176,6 +177,7 @@ public abstract class RyFile {
         this.file = new File(this.getDirectory(), this.fullName);
         try {
             this.config.reload();
+            this.loadConfig();
         } catch (Exception exception) {
             RyMessageUtils.sendPluginError("An error occurred while saving " + this.fullName, exception, RySetup.isDebug());
         }
