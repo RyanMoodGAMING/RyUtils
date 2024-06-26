@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>RyUtils-Velocity</artifactId>
+    <version>0.4.6-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
