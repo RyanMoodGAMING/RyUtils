@@ -136,6 +136,7 @@ public abstract class RyFile {
                         DumperSettings.DEFAULT,
                         UpdaterSettings.builder().setVersioning(new BasicVersioning(versionPath))
                                 .setOptionSorting(UpdaterSettings.OptionSorting.SORT_BY_DEFAULTS).build());
+                this.config.update();
             } else {
                 this.config = YamlDocument.create(new File(dataDirectory.toFile(), this.fullName),
                         getClass().getResourceAsStream("/" + this.fullName),
@@ -145,7 +146,7 @@ public abstract class RyFile {
                         UpdaterSettings.builder().build());
             }
             this.file = this.config.getFile();
-            this.config.update();
+          //  this.config.update();
             this.config.save();
             this.loadConfig();
         } catch (IOException exception) {
