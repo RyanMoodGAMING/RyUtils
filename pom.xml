@@ -6,7 +6,7 @@
 
     <groupId>me.ryanmood.ryutils</groupId>
     <artifactId>RyUtils</artifactId>
-    <version>0.4.5-SNAPSHOT</version>
+    <version>0.4.6-SNAPSHOT</version>
 
     <name>RyUtils</name>
 
@@ -15,6 +15,7 @@
         <module>ryutils-bungee</module>
         <module>ryutils-data</module>
         <module>ryutils-velocity</module>
+        <module>ryutils-discord</module>
     </modules>
 
     <packaging>pom</packaging>

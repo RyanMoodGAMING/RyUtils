@@ -3,18 +3,18 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
-        <artifactId>RyUtils</artifactId>
         <groupId>me.ryanmood.ryutils</groupId>
+        <artifactId>RyUtils</artifactId>
         <version>0.4.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>RyUtils-Bungee</artifactId>
+    <artifactId>ryutils-discord</artifactId>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <build>
@@ -44,13 +44,16 @@
                             <relocations>
                                 <relocation>
                                     <pattern>com.google.gson</pattern>
-                                    <shadedPattern>me.ryanmood.ryutils.bungee.lib.gson</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>net.kyori.adventure</pattern>
-                                    <shadedPattern>me.ryanmood.ryutils.bungee.lib.adventure</shadedPattern>
+                                    <shadedPattern>me.ryanmood.ryutils.discord.lib.gson</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -60,23 +63,17 @@
 
     <repositories>
         <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>maven_central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.20-R0.2</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
@@ -89,23 +86,6 @@
             </exclusions>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-            <version>5.1.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.kyori</groupId>
-            <artifactId>adventure-text-minimessage</artifactId>
-            <version>4.16.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.kyori</groupId>
-            <artifactId>adventure-platform-bungeecord</artifactId>
-            <version>4.3.2</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
+
 </project>
