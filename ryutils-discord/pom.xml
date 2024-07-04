@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>ryutils-discord</artifactId>
+    <version>0.4.7-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
