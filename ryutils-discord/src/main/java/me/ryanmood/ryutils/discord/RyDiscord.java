@@ -2,6 +2,7 @@ package me.ryanmood.ryutils.discord;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.ryanmood.ryutils.discord.events.ReadyEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -54,7 +55,7 @@ public abstract class RyDiscord {
     /**
      * Set the channels that the bot can send messages to.
      */
-    protected abstract void setChannels();
+    public abstract void setChannels();
 
     /**
      * Connects the bot to Discord.
@@ -62,6 +63,7 @@ public abstract class RyDiscord {
     public void connectBot() {
         try {
             this.builder = JDABuilder.createDefault(this.botToken).enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT);
+            this.builder.addEventListeners(new ReadyEvent(this));
             this.onPreBuild();
             this.jda = this.builder.build().awaitReady();
         } catch (InterruptedException exception) {
@@ -97,6 +99,11 @@ public abstract class RyDiscord {
      * Executes after the bot has connected and JDA isn't null.
      */
     protected abstract void onConnect();
+
+    /**
+     * Executes when JDA sends the 'ready' event.
+     */
+    public abstract void onReady();
 
     /**
      * Executes before the bot shuts down and JDA isn't null.
