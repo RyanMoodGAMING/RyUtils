@@ -2,7 +2,6 @@ package me.ryanmood.ryutils.discord;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -10,10 +9,8 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
-import java.util.Date;
+import java.util.*;
 
 /*
  * This software and its content is copyright of RyanMoodGAMING - © RyanMoodGAMING 2023. All rights reserved.
@@ -40,6 +37,8 @@ public abstract class RyDiscord {
     @Setter
     private boolean debug;
 
+    private Collection<Object> eventListeners = new HashSet<>();
+
     /**
      * Bot information.
      *
@@ -60,12 +59,13 @@ public abstract class RyDiscord {
     public void connectBot() {
         try {
             this.jda = JDABuilder.createDefault(this.botToken).enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
+                    .addEventListeners(this.eventListeners)
                     .build().awaitReady();
         } catch (InterruptedException exception) {
             RyMessageUtils.sendBotError("An error occurred while connecting to the discord bot.", exception, this.isDebug());
         }
         if (this.jda == null) {
-            RyMessageUtils.sendBotError("Plugin has been disabled due to JDA been null.", true);
+            RyMessageUtils.sendBotError("Bot has shutdown due to JDA been null.", true);
             return;
         }
         this.embed = new RyEmbed(this);
@@ -83,6 +83,14 @@ public abstract class RyDiscord {
     }
 
     /**
+     * Executes before the JDA is built.
+     * <br><br>
+     * This is where you should use {@link #addEvent(Object)} here and other {@link #getJda()} options
+     * that are required to be done before the JDA is built.
+     */
+    protected abstract void onPreBuild();
+
+    /**
      * Executes after the bot has connected and JDA isn't null.
      */
     protected abstract void onConnect();
@@ -91,6 +99,16 @@ public abstract class RyDiscord {
      * Executes before the bot shuts down and JDA isn't null.
      */
     protected abstract void onShutdown();
+
+    /**
+     * Add an event to be registered.
+     *
+     * @param event
+     */
+    public void addEvent(Object event) {
+        this.eventListeners.add(event);
+        return;
+    }
 
     /**
      * Send a message to a channel.
