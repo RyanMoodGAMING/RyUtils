@@ -24,6 +24,11 @@ import java.util.*;
 public abstract class RyDiscord {
 
     /**
+     * The JDA builder.
+     */
+    @Getter
+    private JDABuilder builder;
+    /**
      * The JDA instance.
      */
     @Getter
@@ -36,8 +41,6 @@ public abstract class RyDiscord {
     @Getter
     @Setter
     private boolean debug;
-
-    private Collection<Object> eventListeners = new HashSet<>();
 
     /**
      * Bot information.
@@ -57,11 +60,10 @@ public abstract class RyDiscord {
      * Connects the bot to Discord.
      */
     public void connectBot() {
-        this.onPreBuild();
         try {
-            this.jda = JDABuilder.createDefault(this.botToken).enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
-                    .addEventListeners(this.eventListeners)
-                    .build().awaitReady();
+            this.builder = JDABuilder.createDefault(this.botToken).enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT);
+            this.onPreBuild();
+            this.jda = this.builder.build().awaitReady();
         } catch (InterruptedException exception) {
             RyMessageUtils.sendBotError("An error occurred while connecting to the discord bot.", exception, this.isDebug());
         }
@@ -86,7 +88,7 @@ public abstract class RyDiscord {
     /**
      * Executes before the JDA is built.
      * <br><br>
-     * This is where you should use {@link #addEvent(Object)} here and other {@link #getJda()} options
+     * This is where you should use {@link #getBuilder()} options
      * that are required to be done before the JDA is built.
      */
     protected abstract void onPreBuild();
@@ -100,16 +102,6 @@ public abstract class RyDiscord {
      * Executes before the bot shuts down and JDA isn't null.
      */
     protected abstract void onShutdown();
-
-    /**
-     * Add an event to be registered.
-     *
-     * @param event
-     */
-    public void addEvent(Object event) {
-        this.eventListeners.add(event);
-        return;
-    }
 
     /**
      * Send a message to a channel.
