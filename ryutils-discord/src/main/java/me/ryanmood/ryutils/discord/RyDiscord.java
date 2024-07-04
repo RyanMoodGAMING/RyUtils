@@ -57,6 +57,7 @@ public abstract class RyDiscord {
      * Connects the bot to Discord.
      */
     public void connectBot() {
+        this.onPreBuild();
         try {
             this.jda = JDABuilder.createDefault(this.botToken).enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
                     .addEventListeners(this.eventListeners)
