@@ -140,8 +140,7 @@ public abstract class RyFile {
                 this.config.update();
             } else {
                 this.config = YamlDocument.create(new File(dataDirectory.toFile(), this.fullName),
-                        getClass().getResourceAsStream("/" + this.fullName),
-                        GeneralSettings.DEFAULT);
+                        getClass().getResourceAsStream("/" + this.fullName));
             }
             this.file = this.config.getFile();
           //  this.config.update();
