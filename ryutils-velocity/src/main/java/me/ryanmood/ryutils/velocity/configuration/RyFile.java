@@ -54,6 +54,28 @@ public abstract class RyFile {
      */
     @Getter
     private File file;
+
+    /**
+     * General Settings for the YAML configuration.
+     */
+    @Getter
+    private GeneralSettings generalSettings;
+    /**
+     * Loader Settings for the YAML configuration.
+     */
+    @Getter
+    private LoaderSettings loaderSettings;
+    /**
+     * Dumper Settings for the YAML configuration.
+     */
+    @Getter
+    private DumperSettings dumperSettings;
+    /**
+     * Updater Settings for the YAML configuration.
+     */
+    @Getter
+    private UpdaterSettings updaterSettings;
+
     /**
      * The Yaml Document for the config file.
      */
@@ -66,7 +88,7 @@ public abstract class RyFile {
      * @param name The name of the config.
      */
     public RyFile(String name) {
-        this(RySetup.getPluginInstance(), name, RySetup.getPluginPath(), false, null);
+        this(RySetup.getPluginInstance(), RySetup.getProxyServer(), name, RySetup.getPluginPath(), false, null, true);
     }
 
     /**
@@ -75,8 +97,8 @@ public abstract class RyFile {
      * @param instance The plugin's instance.
      * @param name     The name of the config.
      */
-    public RyFile(Object instance, String name) {
-        this (instance, name, RySetup.getPluginPath(), false, null);
+    public RyFile(Object instance, ProxyServer proxyServer, String name) {
+        this (instance, proxyServer, name, RySetup.getPluginPath(), false, null, true);
     }
 
     /**
@@ -86,18 +108,43 @@ public abstract class RyFile {
      * @param autoUpdate Should the config auto update?
      */
     public RyFile(String name, boolean autoUpdate) {
-        this(RySetup.getPluginInstance(), name, RySetup.getPluginPath(), autoUpdate, "config-version");
+        this(RySetup.getPluginInstance(), RySetup.getProxyServer(), name, RySetup.getPluginPath(), autoUpdate, "config-version", true);
     }
 
     /**
      * The configuration file.
      *
-     * @param instance   The plugin's instance.
-     * @param name       The name of the plugin.
-     * @param autoUpdate Should the config auto update?
+     * @param name              The name of the plugin.
+     * @param autoUpdate        Should the config auto update?
+     * @param useDefaultOptions Should the default options be used if they are missing form the config?
      */
-    public RyFile(Object instance, String name, boolean autoUpdate) {
-        this(instance, name, RySetup.getPluginPath(), autoUpdate, "config-version");
+    public RyFile(String name, boolean autoUpdate, boolean useDefaultOptions) {
+        this(RySetup.getPluginInstance(), RySetup.getProxyServer(), name, RySetup.getPluginPath(), autoUpdate, "config-version", useDefaultOptions);
+    }
+
+    /**
+     * The configuration file.
+     *
+     * @param instance    The plugin's instance.
+     * @param proxyServer The server's proxy.
+     * @param name        The name of the plugin.
+     * @param autoUpdate  Should the config auto update?
+     */
+    public RyFile(Object instance, ProxyServer proxyServer, String name, boolean autoUpdate) {
+        this(instance, proxyServer, name, RySetup.getPluginPath(), autoUpdate, "config-version", true);
+    }
+
+    /**
+     * The configuration file.
+     *
+     * @param instance          The plugin's instance.
+     * @param proxyServer       The server's proxy.
+     * @param name              The name of the plugin.
+     * @param autoUpdate        Should the config auto update?
+     * @param useDefaultOptions Should the default options be used if they are missing form the config?
+     */
+    public RyFile(Object instance, ProxyServer proxyServer, String name, boolean autoUpdate, boolean useDefaultOptions) {
+        this(instance, proxyServer, name, RySetup.getPluginPath(), autoUpdate, "config-version", useDefaultOptions);
     }
 
     /**
@@ -109,7 +156,20 @@ public abstract class RyFile {
      * @param versionPath   The path which shows the version of the config.
      */
     public RyFile(String name, @DataDirectory Path dataDirectory, boolean autoUpdate, @Nullable String versionPath) {
-        this(RySetup.getPluginInstance(), name, dataDirectory, autoUpdate, versionPath);
+        this(RySetup.getPluginInstance(), RySetup.getProxyServer(), name, dataDirectory, autoUpdate, versionPath, true);
+    }
+
+    /**
+     * The configuration file.
+     *
+     * @param name              The name of the config.
+     * @param dataDirectory     The location of the config.
+     * @param autoUpdate        Should the config auto update?
+     * @param versionPath       The path which shows the version of the config.
+     * @param useDefaultOptions Should the default options be used if they are missing form the config?
+     */
+    public RyFile(String name, @DataDirectory Path dataDirectory, boolean autoUpdate, @Nullable String versionPath, boolean useDefaultOptions) {
+        this(RySetup.getPluginInstance(), RySetup.getProxyServer(), name, dataDirectory, autoUpdate, versionPath, useDefaultOptions);
     }
 
     /**
@@ -121,29 +181,63 @@ public abstract class RyFile {
      * @param autoUpdate    Should the config auto update?
      * @param versionPath   The path which shows the version of the config.
      */
-    public RyFile(Object instance, String name, @DataDirectory Path dataDirectory, boolean autoUpdate, @Nullable String versionPath) {
+    public RyFile(Object instance, ProxyServer proxyServer, String name, @DataDirectory Path dataDirectory, boolean autoUpdate,
+                  @Nullable String versionPath, boolean useDefaultOptions) {
         this.fullName = name.endsWith(".yml") ? name : name + "yml";
         this.directory = dataDirectory.toFile();
         this.dataDirectory = dataDirectory;
         this.instance = instance;
-        this.server = RySetup.getProxyServer();
+        this.server = proxyServer;
+
+        GeneralSettings generalSettings = GeneralSettings.builder()
+                .setUseDefaults(useDefaultOptions)
+                .build();
+
+        LoaderSettings loaderSettings = LoaderSettings.DEFAULT;
+        DumperSettings dumperSettings = DumperSettings.DEFAULT;
+
+        UpdaterSettings updaterSettings;
+
+        if (autoUpdate && versionPath != null) {
+            updaterSettings = UpdaterSettings.builder()
+                    .setVersioning(new BasicVersioning(versionPath))
+                    .setOptionSorting(UpdaterSettings.OptionSorting.SORT_BY_DEFAULTS)
+                    .build();
+        } else {
+            updaterSettings = UpdaterSettings.DEFAULT;
+        }
+
+        this.setupAndLoad(generalSettings, loaderSettings, dumperSettings, updaterSettings);
+    }
+
+    public RyFile(Object instance, ProxyServer proxyServer, String name, @DataDirectory Path dataDirectory, GeneralSettings generalSettings,
+                  LoaderSettings loaderSettings, DumperSettings dumperSettings, UpdaterSettings updaterSettings) {
+        this.fullName = name.endsWith(".yml") ? name : name + "yml";
+        this.directory = dataDirectory.toFile();
+        this.dataDirectory = dataDirectory;
+        this.instance = instance;
+        this.server = proxyServer;
+
+        this.setupAndLoad(generalSettings, loaderSettings, dumperSettings, updaterSettings);
+    }
+
+    private void setupAndLoad(GeneralSettings generalSettings, LoaderSettings loaderSettings, DumperSettings dumperSettings,
+                       UpdaterSettings updaterSettings) {
+        this.generalSettings = generalSettings;
+        this.loaderSettings = loaderSettings;
+        this.dumperSettings = dumperSettings;
+        this.updaterSettings = updaterSettings;
 
         try {
-            if (autoUpdate && versionPath != null) {
-                this.config = YamlDocument.create(new File(dataDirectory.toFile(), this.fullName),
-                        getClass().getResourceAsStream("/" + this.fullName),
-                        GeneralSettings.DEFAULT,
-                        LoaderSettings.builder().setAutoUpdate(true).build(),
-                        DumperSettings.DEFAULT,
-                        UpdaterSettings.builder().setVersioning(new BasicVersioning(versionPath))
-                                .setOptionSorting(UpdaterSettings.OptionSorting.SORT_BY_DEFAULTS).build());
-                this.config.update();
-            } else {
-                this.config = YamlDocument.create(new File(dataDirectory.toFile(), this.fullName),
-                        getClass().getResourceAsStream("/" + this.fullName));
-            }
+            this.config = YamlDocument.create(new File(dataDirectory.toFile(), this.fullName),
+                    getClass().getResourceAsStream("/" + this.fullName),
+                    generalSettings,
+                    loaderSettings,
+                    dumperSettings,
+                    updaterSettings);
+
             this.file = this.config.getFile();
-          //  this.config.update();
+            this.config.update();
             this.config.save();
             this.loadConfig();
         } catch (IOException exception) {
