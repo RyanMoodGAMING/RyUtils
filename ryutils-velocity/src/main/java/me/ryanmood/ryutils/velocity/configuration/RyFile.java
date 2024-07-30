@@ -197,6 +197,8 @@ public abstract class RyFile {
                 .setAutoUpdate(autoUpdate)
                 .build();
 
+        DumperSettings dumperSettings = DumperSettings.DEFAULT;
+
         UpdaterSettings updaterSettings;
 
         if (autoUpdate && versionPath != null) {
