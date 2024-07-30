@@ -193,8 +193,9 @@ public abstract class RyFile {
                 .setUseDefaults(useDefaultOptions)
                 .build();
 
-        LoaderSettings loaderSettings = LoaderSettings.DEFAULT;
-        DumperSettings dumperSettings = DumperSettings.DEFAULT;
+        LoaderSettings loaderSettings = LoaderSettings.builder()
+                .setAutoUpdate(autoUpdate)
+                .build();
 
         UpdaterSettings updaterSettings;
 
@@ -237,7 +238,7 @@ public abstract class RyFile {
                     updaterSettings);
 
             this.file = this.config.getFile();
-            this.config.update();
+            if (loaderSettings.isAutoUpdate()) this.config.update();
             this.config.save();
             this.loadConfig();
         } catch (IOException exception) {
