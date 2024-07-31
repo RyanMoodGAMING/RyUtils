@@ -29,7 +29,7 @@ public abstract class RyPluginMessages {
      * Create a plugin message instance.
      */
     public RyPluginMessages() {
-        this(RySetup.getPluginInstance(), RySetup.getProxyServer(), "custom");
+        this(RySetup.getPluginInstance(), RySetup.getProxyServer(), "custom", "main");
     }
 
     /**
@@ -39,7 +39,7 @@ public abstract class RyPluginMessages {
      * @param proxyServer The proxy server.
      */
     public RyPluginMessages(Object instance, ProxyServer proxyServer) {
-        this(instance, proxyServer, "custom");
+        this(instance, proxyServer, "custom", "main");
     }
 
     /**
@@ -47,8 +47,8 @@ public abstract class RyPluginMessages {
      *
      * @param identifier The identifier the plugin will use.
      */
-    public RyPluginMessages(String identifier) {
-        this(RySetup.getPluginInstance(), RySetup.getProxyServer(), identifier);
+    public RyPluginMessages(String identifier, String channel) {
+        this(RySetup.getPluginInstance(), RySetup.getProxyServer(), identifier, channel);
     }
 
     /**
@@ -58,12 +58,9 @@ public abstract class RyPluginMessages {
      * @param proxyServer The proxy server.
      * @param identifier  The identifier the plugin will use.
      */
-    public RyPluginMessages(Object instance, ProxyServer proxyServer, String identifier) {
+    public RyPluginMessages(Object instance, ProxyServer proxyServer, String identifier, String channel) {
         this.proxyServer = proxyServer;
-        if (!identifier.contains(":")) {
-            identifier = identifier + ":main";
-        }
-        this.identifier = MinecraftChannelIdentifier.from(identifier);
+        this.identifier = MinecraftChannelIdentifier.create(identifier, channel);
         this.instance = instance;
 
         proxyServer.getEventManager().register(instance, this);
