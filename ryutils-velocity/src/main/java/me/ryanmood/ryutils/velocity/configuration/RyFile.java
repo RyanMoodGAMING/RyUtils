@@ -205,9 +205,12 @@ public abstract class RyFile {
             updaterSettings = UpdaterSettings.builder()
                     .setVersioning(new BasicVersioning(versionPath))
                     .setOptionSorting(UpdaterSettings.OptionSorting.SORT_BY_DEFAULTS)
+                    .setAutoSave(true)
                     .build();
         } else {
-            updaterSettings = UpdaterSettings.DEFAULT;
+            updaterSettings = UpdaterSettings.builder()
+                    .setAutoSave(false)
+                    .build();
         }
 
         this.setupAndLoad(generalSettings, loaderSettings, dumperSettings, updaterSettings);
