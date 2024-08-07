@@ -6,6 +6,7 @@ import lombok.Setter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -142,11 +143,7 @@ public class RyMessageUtils {
                    .replace("%player%", player.getName());
        }
 
-       message = legacyToAdventure(message);
-
-        Component component = MiniMessage.miniMessage().deserialize(message);
-
-        return component;
+        return adventureTranslate(message);
     }
 
     /**
@@ -158,7 +155,10 @@ public class RyMessageUtils {
     public static Component adventureTranslate(String message) {
         message = legacyToAdventure(message);
 
-        Component component = MiniMessage.miniMessage().deserialize(message);
+        Component component = MiniMessage.miniMessage().deserialize(message)
+                .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+                .decorationIfAbsent(TextDecoration.BOLD, TextDecoration.State.FALSE)
+                .decorationIfAbsent(TextDecoration.OBFUSCATED, TextDecoration.State.FALSE);
 
         return component;
     }
