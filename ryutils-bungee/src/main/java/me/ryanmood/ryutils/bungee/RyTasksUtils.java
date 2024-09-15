@@ -1,8 +1,12 @@
 package me.ryanmood.ryutils.bungee;
 
+import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -15,6 +19,9 @@ import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("unused")
 public class RyTasksUtils {
+
+    @Getter
+    private static Map<Integer, ScheduledTask> tasks = new HashMap<>();
 
     /**
      * Create a task that runs within a scheduler.
@@ -35,7 +42,8 @@ public class RyTasksUtils {
      * @param callable The Runnable code you would like to happen.
      */
     public static void runAsync(Plugin plugin, Runnable callable) {
-        ProxyServer.getInstance().getScheduler().runAsync(plugin, callable);
+        ScheduledTask task = ProxyServer.getInstance().getScheduler().runAsync(plugin, callable);
+        tasks.put(task.getId(), task);
     }
 
     /**
@@ -61,7 +69,8 @@ public class RyTasksUtils {
      * @param timeUnit The time unit.
      */
     public static void runAsyncLater(Plugin plugin, Runnable callable, long delay, TimeUnit timeUnit) {
-        ProxyServer.getInstance().getScheduler().schedule(plugin, callable, delay, timeUnit);
+        ScheduledTask task = ProxyServer.getInstance().getScheduler().schedule(plugin, callable, delay, timeUnit);
+        tasks.put(task.getId(), task);
     }
 
     /**
@@ -75,7 +84,7 @@ public class RyTasksUtils {
      * @param timeUnit The time unit.
      */
     @Deprecated
-    public static void runTimer( Plugin plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
+    public static void runTimer(Plugin plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
         runAsyncTimer(plugin, callable, delay, interval, timeUnit);
     }
 
@@ -88,8 +97,9 @@ public class RyTasksUtils {
      * @param interval The interval before the runnable runs again.
      * @param timeUnit The time unit.
      */
-    public static void runAsyncTimer( Plugin plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
-        ProxyServer.getInstance().getScheduler().schedule(plugin, callable, delay, interval, timeUnit);
+    public static void runAsyncTimer(Plugin plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
+        ScheduledTask task = ProxyServer.getInstance().getScheduler().schedule(plugin, callable, delay, interval, timeUnit);
+        tasks.put(task.getId(), task);
     }
 
 }
