@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -126,14 +127,11 @@ public class RyMessageUtils {
      * @return        a translated Component
      */
     public static Component adventureTranslate(ProxiedPlayer player, String message) {
-        message = legacyToAdventure(message)
+        message = message
                 .replace("%prefix%", getPrefix())
                 .replace("%player%", player.getName());
 
-
-        Component component = MiniMessage.miniMessage().deserialize(message);
-
-        return component;
+        return adventureTranslate(message);
     }
 
     /**
@@ -145,7 +143,10 @@ public class RyMessageUtils {
     public static Component adventureTranslate(String message) {
         message = legacyToAdventure(message);
 
-        Component component = MiniMessage.miniMessage().deserialize(message);
+        Component component = MiniMessage.miniMessage().deserialize(message)
+                .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+                .decorationIfAbsent(TextDecoration.BOLD, TextDecoration.State.FALSE)
+                .decorationIfAbsent(TextDecoration.OBFUSCATED, TextDecoration.State.FALSE);
 
         return component;
     }
