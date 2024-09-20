@@ -1,9 +1,10 @@
 package me.ryanmood.ryutils.spigot;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import lombok.Setter;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.ryanmood.ryutils.spigot.patterns.AmpersandPattern;
+import me.ryanmood.ryutils.spigot.patterns.HexPattern;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -16,8 +17,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /*
@@ -49,33 +48,6 @@ public class RyMessageUtils {
     @Getter
     @Setter
     private static String supportMessage = "Please contact the plugin author for support.";
-
-    private static final Pattern HEX_PATTERN = Pattern.compile("(?i)&#([0-9A-F]{6})");
-    private static final Pattern AMPERSAND_PATTERN = Pattern.compile("(?i)&([0-9A-FK-ORX#])");
-    private static final Map<String, String> codeTranslations = new ImmutableMap.Builder<String, String>()
-            .put("0", "<black>")
-            .put("1", "<dark_blue>")
-            .put("2", "<dark_green>")
-            .put("3", "<dark_aqua>")
-            .put("4", "<dark_red>")
-            .put("5", "<dark_purple>")
-            .put("6", "<gold>")
-            .put("7", "<gray>")
-            .put("8", "<dark_gray>")
-            .put("9", "<blue>")
-            .put("a", "<green>")
-            .put("b", "<aqua>")
-            .put("c", "<red>")
-            .put("d", "<light_purple>")
-            .put("e", "<yellow>")
-            .put("f", "<white>")
-            .put("k", "<obfuscated>")
-            .put("l", "<bold>")
-            .put("m", "<strikethrough>")
-            .put("n", "<underlined>")
-            .put("o", "<italic>")
-            .put("r", "<reset>")
-            .build();
 
     public RyMessageUtils(Plugin plugin) {
         this.instance = plugin;
@@ -182,21 +154,13 @@ public class RyMessageUtils {
      * @Author: EternalCodeTeam (https://github.com/EternalCodeTeam/ChatFormatter/)
      */
     public static String legacyToAdventure(String input) {
-        String result = HEX_PATTERN.matcher(input).replaceAll(matchResult -> {
-            String hex = matchResult.group(1);
-            return "<#" + hex + ">";
-        });
+        HexPattern hex = new HexPattern();
+        String result = hex.process(input);
 
-        result = AMPERSAND_PATTERN.matcher(result).replaceAll(matchResult -> {
-           String colour = matchResult.group(1);
-           String adventure = codeTranslations.get(colour.toLowerCase());
+        result = result.replaceAll("§", "&");
 
-           if (adventure == null) {
-               return matchResult.group();
-           }
-
-           return adventure;
-        });
+        AmpersandPattern ampersand = new AmpersandPattern();
+        result = ampersand.process(result);
 
         return result;
     }
