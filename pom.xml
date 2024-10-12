@@ -16,6 +16,7 @@
         <module>ryutils-data</module>
         <module>ryutils-velocity</module>
         <module>ryutils-discord</module>
+        <module>ryutils-base</module>
     </modules>
 
     <packaging>pom</packaging>

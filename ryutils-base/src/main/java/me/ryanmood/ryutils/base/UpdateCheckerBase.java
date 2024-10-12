@@ -1,35 +1,19 @@
-package me.ryanmood.ryutils.spigot;
+package me.ryanmood.ryutils.base;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import lombok.Getter;
 import lombok.Setter;
-import me.ryanmood.ryutils.base.RyMessageBase;
-import me.ryanmood.ryutils.base.UpdateCheckerBase;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/*
- * This software and its content is copyright of RyanMoodGAMING - © RyanMoodGAMING 2023. All rights reserved.
- * Any redistribution or reproduction of part or all of the contents in any form is prohibited other than the following:
- * you may print or download to a local hard disk extracts for your personal and non-commercial use only
- * you may copy the content to individual third parties for their personal use, but only if you acknowledge the website as the source of the material
- * You may not, except with our express written permission, distribute or commercially exploit the content. Nor may you transmit it or store it in any other website or other form of electronic retrieval system.
- */
+@SuppressWarnings({ "static-access", "noinspection", "DataFlowIssue" })
+public interface UpdateCheckerBase {
 
-@SuppressWarnings("unused")
-public class UpdateChecker implements UpdateCheckerBase {
-
-    @Getter
     @Setter
-    private RyMessageBase messageBase = null;
-
-    public UpdateChecker(RyMessageUtils messageUtils) {
-        this.messageBase = messageUtils;
-    }
+    RyMessageBase messageBase = null;
 
     /**
      * Update Checker will check the URL to see if version provided matches the version on the checker site.
@@ -38,7 +22,7 @@ public class UpdateChecker implements UpdateCheckerBase {
      * @param pluginVersion The version of the plugin.
      * @param checkURL      The url of the update checker site.
      */
-    public void updateChecker(String pluginName, String pluginVersion, String checkURL) {
+    default void updateChecker(String pluginName, String pluginVersion, String checkURL) {
         try {
             URL url = new URL(checkURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

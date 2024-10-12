@@ -3,10 +3,16 @@ package me.ryanmood.ryutils.velocity;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.scheduler.ScheduledTask;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
+import me.ryanmood.ryutils.base.RyTasksBase;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -18,10 +24,14 @@ import java.util.concurrent.TimeUnit;
  */
 
 @SuppressWarnings("unused")
-public class RyTasksUtils {
+public class RyTasksUtils implements RyTasksBase {
 
+    @Getter
+    private Map<Integer, ScheduledTask> tasks = new HashMap<>();
+
+    @Getter(AccessLevel.PRIVATE)
     @Setter
-    private static ProxyServer server = RySetup.getProxyServer();
+    private ProxyServer server = RySetup.getProxyServer();
 
     /**
      * Create a task that runs within a scheduler.
@@ -30,9 +40,8 @@ public class RyTasksUtils {
      * @param plugin   The instance of the plugin you are using.
      * @param callable The Runnable code you would like to happen.
      */
-    @Deprecated
-    public static void run(@NotNull Object plugin, Runnable callable) {
-        runAsync(plugin, callable);
+    public void run(Object plugin, Runnable callable) {
+        this.runAsync(plugin, callable);
     }
 
     /**
@@ -41,8 +50,59 @@ public class RyTasksUtils {
      * @param plugin   The instance of the plugin you are using.
      * @param callable The Runnable code you would like to happen.
      */
-    public static void runAsync(@NotNull Object plugin, Runnable callable) {
-        server.getScheduler().buildTask(plugin, callable).schedule();
+    public void runAsync(Object plugin, Runnable callable) {
+        ScheduledTask task = this.server.getScheduler().buildTask(plugin, callable).schedule();
+        this.tasks.put(randomInt(), task);
+    }
+
+    /**
+     * Create a task that runs within a scheduler after a certain amount of time.
+     *
+     * @param plugin   The instance of the plugin you are using.
+     * @param callable The Runnable code you would like to happen.
+     * @param delay    The delay before the runnable runs.
+     */
+    @Override
+    public void runLater(Object plugin, Runnable callable, long delay) {
+        this.runLater(plugin, callable, delay, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Create a task that runs within an async scheduler after a certain amount of time.
+     *
+     * @param plugin   The instance of the plugin you are using.
+     * @param callable The Runnable code you would like to happen.
+     * @param delay    The delay before the runnable runs.
+     */
+    @Override
+    public void runAsyncLater(Object plugin, Runnable callable, long delay) {
+        this.runAsyncLater(plugin, callable, delay, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Create a task that runs on a timer within a scheduler after a certain amount of time.
+     *
+     * @param plugin   The instance of the plugin you are using.
+     * @param callable The Runnable code you would like to happen.
+     * @param delay    The delay before the runnable runs.
+     * @param interval The interval before the runnable runs again.
+     */
+    @Override
+    public void runTimer(Object plugin, Runnable callable, long delay, long interval) {
+        this.runTimer(plugin, callable, delay, interval, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Create a task that runs on a timer within an async scheduler after a certain amount of time.
+     *
+     * @param plugin   The instance of the plugin you are using.
+     * @param callable The Runnable code you would like to happen.
+     * @param delay    The delay before the runnable runs.
+     * @param interval The interval before the runnable runs again.
+     */
+    @Override
+    public void runAsyncTimer(Object plugin, Runnable callable, long delay, long interval) {
+        this.runAsyncTimer(plugin, callable, delay, interval, TimeUnit.SECONDS);
     }
 
     /**
@@ -54,9 +114,8 @@ public class RyTasksUtils {
      * @param delay    The delay before the runnable runs.
      * @param timeUnit The time unit.
      */
-    @Deprecated
-    public static void runLater(@NotNull Object plugin, Runnable callable, long delay, TimeUnit timeUnit) {
-        runAsyncLater(plugin, callable, delay, timeUnit);
+    public void runLater(Object plugin, Runnable callable, long delay, TimeUnit timeUnit) {
+        this.runAsyncLater(plugin, callable, delay, timeUnit);
     }
 
     /**
@@ -67,8 +126,9 @@ public class RyTasksUtils {
      * @param delay    The delay before the runnable runs.
      * @param timeUnit The time unit.
      */
-    public static void runAsyncLater(@NotNull Object plugin, Runnable callable, long delay, TimeUnit timeUnit) {
-        server.getScheduler().buildTask(plugin, callable).delay(delay, timeUnit).schedule();
+    public void runAsyncLater(Object plugin, Runnable callable, long delay, TimeUnit timeUnit) {
+        ScheduledTask task = this.server.getScheduler().buildTask(plugin, callable).delay(delay, timeUnit).schedule();
+        this.tasks.put(randomInt(), task);
     }
 
     /**
@@ -81,9 +141,8 @@ public class RyTasksUtils {
      * @param interval The interval before the runnable runs again.
      * @param timeUnit The time unit.
      */
-    @Deprecated
-    public static void runTimer(@NotNull Object plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
-        runAsyncTimer(plugin, callable, delay, interval, timeUnit);
+    public void runTimer(Object plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
+        this.runAsyncTimer(plugin, callable, delay, interval, timeUnit);
     }
 
     /**
@@ -95,8 +154,9 @@ public class RyTasksUtils {
      * @param interval The interval before the runnable runs again.
      * @param timeUnit The time unit.
      */
-    public static void runAsyncTimer(@NotNull Object plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
-        server.getScheduler().buildTask(plugin, callable).delay(delay, timeUnit).repeat(interval, timeUnit).schedule();
+    public void runAsyncTimer(Object plugin, Runnable callable, long delay, long interval, TimeUnit timeUnit) {
+        ScheduledTask task = this.server.getScheduler().buildTask(plugin, callable).delay(delay, timeUnit).repeat(interval, timeUnit).schedule();
+        this.tasks.put(randomInt(), task);
     }
 
     /**
@@ -107,8 +167,31 @@ public class RyTasksUtils {
      * @param delay    The delay before the runnable repeats.
      * @param timeUnit The time unit.
      */
-    public static void runAsyncRepeat(@NotNull Object plugin, Runnable callable, long delay, TimeUnit timeUnit) {
-        server.getScheduler().buildTask(plugin, callable).repeat(delay, timeUnit).schedule();
+    public void runAsyncRepeat(Object plugin, Runnable callable, long delay, TimeUnit timeUnit) {
+        ScheduledTask task = this.server.getScheduler().buildTask(plugin, callable).repeat(delay, timeUnit).schedule();
+        this.tasks.put(randomInt(), task);
+    }
+
+    @Override
+    public ScheduledTask getById(int id) {
+        return this.getTasks().get(id);
+    }
+
+    @Override
+    public void cancel(int id) {
+        this.getTasks().get(id).cancel();
+        this.tasks.remove(id);
+    }
+
+    /**
+     * Cancel all tasks that we have scheduled.
+     */
+    @Override
+    public void cancelAll() {
+        for (int id : this.tasks.keySet()) {
+            this.getById(id).cancel();
+            this.tasks.remove(id);
+        }
     }
 
     /**
@@ -116,12 +199,17 @@ public class RyTasksUtils {
      *
      * @param plugin The instance of the plugin you are using.
      */
-    public static void cancelAll(@NotNull Object plugin) {
+    public void cancelAll(Object plugin) {
         Collection<ScheduledTask> tasks = server.getScheduler().tasksByPlugin(plugin);
 
         for (ScheduledTask task : tasks) {
             task.cancel();
         }
+    }
+
+    private int randomInt() {
+        Random rand = new Random();
+        return rand.nextInt((999 - 100) + 1);
     }
 
 }

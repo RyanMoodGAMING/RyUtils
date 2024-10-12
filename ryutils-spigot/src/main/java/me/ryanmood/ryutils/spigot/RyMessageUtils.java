@@ -3,6 +3,8 @@ package me.ryanmood.ryutils.spigot;
 import lombok.Getter;
 import lombok.Setter;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.ryanmood.ryutils.base.RyMessageBase;
+import me.ryanmood.ryutils.base.patterns.StripPattern;
 import me.ryanmood.ryutils.spigot.patterns.AmpersandPattern;
 import me.ryanmood.ryutils.spigot.patterns.HexPattern;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -28,30 +30,37 @@ import java.util.stream.Collectors;
  */
 
 @SuppressWarnings("unused")
-public class RyMessageUtils {
+public class RyMessageUtils implements RyMessageBase {
 
     @Setter
-    private static Plugin instance = RySetup.getPluginInstance();
+    private Plugin instance = RySetup.getPluginInstance();
     @Setter
     @Getter
-    private static BukkitAudiences audiences = RySetup.getAudiences();
+    private BukkitAudiences audiences = RySetup.getAudiences();
 
     @Getter
     @Setter
-    private static String prefix = "";
+    private String prefix = "";
     @Getter
     @Setter
-    private static String errorPrefix = "&cError &7» &c";
+    private String errorPrefix = "&cError &7» &c";
     @Getter
     @Setter
-    private static String breaker = "&7&m------------------------------------";
+    private String breaker = "&7&m------------------------------------";
     @Getter
     @Setter
-    private static String supportMessage = "Please contact the plugin author for support.";
+    private String supportMessage = "Please contact the plugin author for support.";
 
     public RyMessageUtils(Plugin plugin) {
         this.instance = plugin;
         this.audiences = BukkitAudiences.create(plugin);
+    }
+
+    public RyMessageUtils(Plugin plugin, String prefix, String errorPrefix) {
+        this.instance = plugin;
+        this.audiences = BukkitAudiences.create(plugin);
+        this.prefix = prefix;
+        this.errorPrefix = errorPrefix;
     }
 
     /**
@@ -61,19 +70,18 @@ public class RyMessageUtils {
      * @param message The message you wish to be translated.
      * @return        a translated String
      */
-    public static String translate(Player player, String message) {
+    public String translate(Player player, String message) {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             String PAPI = PlaceholderAPI.setPlaceholders(player, message)
-                    .replace("%prefix%", getPrefix())
+                    .replace("%prefix%", this.getPrefix())
                     .replace("%player%", player.getName());
 
             return HEXUtils.colorify(PAPI);
         }
 
         return HEXUtils.colorify(message)
-                .replace("%prefix%", getPrefix())
+                .replace("%prefix%", this.getPrefix())
                 .replace("%player%", player.getName());
-
     }
 
     /**
@@ -82,9 +90,9 @@ public class RyMessageUtils {
      * @param message The message you wish to be translated.
      * @return        a translated String
      */
-    public static String translate(String message) {
+    public String translate(String message) {
         return HEXUtils.colorify(message)
-                .replace("%prefix%", getPrefix());
+                .replace("%prefix%", this.getPrefix());
     }
 
     /**
@@ -93,8 +101,8 @@ public class RyMessageUtils {
      * @param messages The string list you wish to be translated.
      * @return         a string list of translated messages.
      */
-    public static List<String> translate(@NotNull List<String> messages) {
-        return messages.stream().map(RyMessageUtils::translate).collect(Collectors.toList());
+    public List<String> translate(List<String> messages) {
+        return messages.stream().map(this::translate).collect(Collectors.toList());
     }
 
     /**
@@ -104,18 +112,18 @@ public class RyMessageUtils {
      * @param message The message you wish to be translated.
      * @return        a translated Component
      */
-    public static Component adventureTranslate(Player player, String message) {
+    public Component adventureTranslate(Player player, String message) {
        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
            message = PlaceholderAPI.setPlaceholders(player, message)
-                   .replace("%prefix%", getPrefix())
+                   .replace("%prefix%", this.getPrefix())
                    .replace("%player%", player.getName());
        } else {
            message = message
-                   .replace("%prefix%", getPrefix())
+                   .replace("%prefix%", this.getPrefix())
                    .replace("%player%", player.getName());
        }
 
-        return adventureTranslate(message);
+        return this.adventureTranslate(message);
     }
 
     /**
@@ -124,8 +132,8 @@ public class RyMessageUtils {
      * @param message The message you wish to be translated.
      * @return        a translated Component
      */
-    public static Component adventureTranslate(String message) {
-        message = legacyToAdventure(message);
+    public Component adventureTranslate(String message) {
+        message = this.legacyToAdventure(message);
 
         Component component = MiniMessage.miniMessage().deserialize(message)
                 .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
@@ -141,9 +149,11 @@ public class RyMessageUtils {
      * @param messages The string list you wish to be translated.
      * @return         a component list of translated messages.
      */
-    public static List<Component> adventureTranslate(@NotNull List<String> messages) {
-        return messages.stream().map(RyMessageUtils::adventureTranslate).collect(Collectors.toList());
+    public List<Component> adventureTranslate(@NotNull List<String> messages) {
+        return messages.stream().map(this::adventureTranslate).collect(Collectors.toList());
     }
+
+
 
     /**
      * Translate a string from legacy to Adventure API.
@@ -153,7 +163,7 @@ public class RyMessageUtils {
      *
      * @Author: EternalCodeTeam (https://github.com/EternalCodeTeam/ChatFormatter/)
      */
-    public static String legacyToAdventure(String input) {
+    public String legacyToAdventure(String input) {
         HexPattern hex = new HexPattern();
         String result = hex.process(input);
 
@@ -166,16 +176,29 @@ public class RyMessageUtils {
     }
 
     /**
+     * Strip all the colours from a piece of text.
+     *
+     * @param input The string that needs the colours stripping from.
+     * @return      String which has no colour codes in it.
+     */
+    public String stripColours(String input) {
+        StripPattern strip = new StripPattern();
+        String result = strip.process(input);
+
+        return result;
+    }
+
+    /**
      * Send a player a message.
      *
      * @param player  The player who you wish to receive the message.
      * @param message The message you wish to send the player.
      */
-    public static void sendPlayer(@NotNull Player player, @NotNull String message) {
-        if (getAudiences() != null) {
-            getAudiences().player(player).sendMessage(adventureTranslate(player, message));
+    public void sendPlayer(Player player, String message) {
+        if (this.getAudiences() != null) {
+            this.getAudiences().player(player).sendMessage(this.adventureTranslate(player, message));
         } else {
-            player.sendMessage(translate(player, message));
+            player.sendMessage(this.translate(player, message));
         }
     }
 
@@ -185,12 +208,12 @@ public class RyMessageUtils {
      * @param player   The player who you wish to receive the messages.
      * @param messages The string list of messages you wish to send to the player.
      */
-    public static void sendPlayer(@NotNull Player player, @NotNull String... messages) {
+    public void sendPlayer(Player player, String... messages) {
         for (String message : messages) {
-            if (getAudiences() != null) {
-                getAudiences().player(player).sendMessage(adventureTranslate(player, message));
+            if (this.getAudiences() != null) {
+                this.getAudiences().player(player).sendMessage(this.adventureTranslate(player, message));
             } else {
-                player.sendMessage(translate(player, message));
+                player.sendMessage(this.translate(player, message));
             }
         }
     }
@@ -201,12 +224,12 @@ public class RyMessageUtils {
      * @param player   The player who you wish to receive the messages.
      * @param messages The string list of messages you wish to send to the player.
      */
-    public static void sendPlayer(Player player, @NotNull List<String> messages) {
+    public void sendPlayer(Player player, List<String> messages) {
         for (String message : messages) {
-            if (getAudiences() != null) {
-                getAudiences().player(player).sendMessage(adventureTranslate(player, message));
+            if (this.getAudiences() != null) {
+                this.getAudiences().player(player).sendMessage(this.adventureTranslate(player, message));
             } else {
-                player.sendMessage(translate(player, message));
+                player.sendMessage(this.translate(player, message));
             }
         }
     }
@@ -217,11 +240,11 @@ public class RyMessageUtils {
      * @param sender  The sender who you wish to receive the messages.
      * @param message The message you wish to send to the sender.
      */
-    public static void sendSender(@NotNull CommandSender sender, @NotNull String message) {
-        if (getAudiences() != null) {
-            getAudiences().sender(sender).sendMessage(adventureTranslate(message));
+    public void sendSender(CommandSender sender, String message) {
+        if (this.getAudiences() != null) {
+            this.getAudiences().sender(sender).sendMessage(this.adventureTranslate(message));
         } else {
-            sender.sendMessage(translate(message));
+            sender.sendMessage(this.translate(message));
         }
     }
 
@@ -231,12 +254,12 @@ public class RyMessageUtils {
      * @param sender   The sender who you wish to receive the messages.
      * @param messages The messages you wish to send to the sender.
      */
-    public static void sendSender(@NotNull CommandSender sender, @NotNull String... messages) {
+    public void sendSender(CommandSender sender, String... messages) {
         for (String message : messages) {
-            if (getAudiences() != null) {
-                getAudiences().sender(sender).sendMessage(adventureTranslate(message));
+            if (this.getAudiences() != null) {
+                this.getAudiences().sender(sender).sendMessage(this.adventureTranslate(message));
             } else {
-                sender.sendMessage(translate(message));
+                sender.sendMessage(this.translate(message));
             }
         }
     }
@@ -247,12 +270,12 @@ public class RyMessageUtils {
      * @param sender   The sender who you wish to receive the messages.
      * @param messages The messages you wish to send to the sender.
      */
-    public static void sendSender(@NotNull CommandSender sender, @NotNull List<String> messages) {
+    public void sendSender(CommandSender sender, List<String> messages) {
         for (String message : messages) {
-            if (getAudiences() != null) {
-                getAudiences().sender(sender).sendMessage(adventureTranslate(message));
+            if (this.getAudiences() != null) {
+                this.getAudiences().sender(sender).sendMessage(this.adventureTranslate(message));
             } else {
-                sender.sendMessage(translate(message));
+                sender.sendMessage(this.translate(message));
             }
         }
     }
@@ -263,13 +286,29 @@ public class RyMessageUtils {
      * @param prefix  If you would like the plugin prefix to be added at the beginning of the message.
      * @param message The message you wish for console to receive.
      */
-    public static void sendConsole(boolean prefix, String message) {
-        if (prefix) message = getPrefix() + message;
+    public void sendConsole(boolean prefix, String message) {
+        if (prefix) message = this.getPrefix() + message;
 
-        if (getAudiences() != null) {
-            getAudiences().console().sendMessage(adventureTranslate(message));
-        } else {
-            Bukkit.getConsoleSender().sendMessage(translate(message));
+        if (this.getAudiences() != null) {
+            this.getAudiences().console().sendMessage(this.adventureTranslate(message));
+
+        } else Bukkit.getConsoleSender().sendMessage(this.translate(message));
+    }
+
+    /**
+     * Send console multiple messages.
+     *
+     * @param prefix   If you would like the plugin prefix to be added at the beginning of the message.
+     * @param messages The messages you wish to send to console.
+     */
+    public void sendConsole(boolean prefix, String... messages) {
+        for (String message : messages) {
+            if (prefix) message = this.getPrefix() + message;
+
+            if (this.getAudiences() != null) {
+                this.getAudiences().console().sendMessage(this.adventureTranslate(message));
+
+            } else Bukkit.getConsoleSender().sendMessage(this.translate(message));
         }
     }
 
@@ -279,33 +318,13 @@ public class RyMessageUtils {
      * @param prefix   If you would like the plugin prefix to be added at the beginning of the message.
      * @param messages The messages you wish to send to console.
      */
-    public static void sendConsole(boolean prefix, String... messages) {
+    public void sendConsole(boolean prefix, List<String> messages) {
         for (String message : messages) {
-            if (prefix) message = getPrefix() + message;
+            if (prefix) message = this.getPrefix() + message;
 
-            if (getAudiences() != null) {
-                getAudiences().console().sendMessage(adventureTranslate(message));
-            } else {
-                Bukkit.getConsoleSender().sendMessage(translate(message));
-            }
-        }
-    }
-
-    /**
-     * Send console multiple messages.
-     *
-     * @param prefix   If you would like the plugin prefix to be added at the beginning of the message.
-     * @param messages The messages you wish to send to console.
-     */
-    public static void sendConsole(boolean prefix, List<String> messages) {
-        for (String message : messages) {
-            if (prefix) message = getPrefix() + message;
-
-            if (getAudiences() != null) {
-                getAudiences().console().sendMessage(adventureTranslate(message));
-            } else {
-                Bukkit.getConsoleSender().sendMessage(translate(message));
-            }
+            if (this.getAudiences() != null) {
+                this.getAudiences().console().sendMessage(this.adventureTranslate(message));
+            } else Bukkit.getConsoleSender().sendMessage(this.translate(message));
         }
     }
 
@@ -316,13 +335,13 @@ public class RyMessageUtils {
      * @param permission The permission the players require to see the broadcast.
      * @param message    The message you wish to be broadcast.
      */
-    public static void broadcast(Player player, String permission, String message) {
+    public void broadcast(Player player, String permission, String message) {
         for (Player online : Bukkit.getOnlinePlayers()) {
             if (online.hasPermission(permission)) {
-                if (getAudiences() != null) {
-                    getAudiences().player(online).sendMessage(adventureTranslate(player, message));
+                if (this.getAudiences() != null) {
+                    this.getAudiences().player(online).sendMessage(this.adventureTranslate(player, message));
                 } else {
-                    online.sendMessage(translate(player, message));
+                    online.sendMessage(this.translate(player, message));
                 }
             }
         }
@@ -335,14 +354,32 @@ public class RyMessageUtils {
      * @param permission The permission the players require to see the broadcast.
      * @param message    The message you wish to be broadcast.
      */
-    public static void broadcast(Player player, Permission permission, String message) {
+    public void broadcast(Player player, Permission permission, String message) {
         for (Player online : Bukkit.getOnlinePlayers()) {
             if (online.hasPermission(permission)) {
-                if (getAudiences() != null) {
-                    getAudiences().player(online).sendMessage(adventureTranslate(player, message));
+                if (this.getAudiences() != null) {
+                    this.getAudiences().player(online).sendMessage(this.adventureTranslate(player, message));
                 } else {
-                    online.sendMessage(translate(player, message));
+                    online.sendMessage(this.translate(player, message));
                 }
+            }
+        }
+    }
+
+    /**
+     * Send a permission based broadcast to all online players.
+     *
+     * @param permission The permission the players require to see the broadcast.
+     * @param message    The message you wish to be sent to the players.
+     */
+    @Override
+    public void broadcast(String permission, String message) {
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            if (!online.hasPermission(permission)) continue;
+            if (this.getAudiences() != null) {
+                this.getAudiences().player(online).sendMessage(this.adventureTranslate(message));
+            } else {
+                online.sendMessage(this.translate(message));
             }
         }
     }
@@ -352,11 +389,12 @@ public class RyMessageUtils {
      *
      * @param message The message you wish to be sent to the players.
      */
-    public static void broadcast(String message) {
-        if (getAudiences() != null) {
-            getAudiences().players().sendMessage(adventureTranslate(message));
+    @Override
+    public void broadcast(String message) {
+        if (this.getAudiences() != null) {
+            this.getAudiences().players().sendMessage(this.adventureTranslate(message));
         } else {
-            Bukkit.getConsoleSender().sendMessage(translate(message));
+            Bukkit.getConsoleSender().sendMessage(this.translate(message));
         }
     }
 
@@ -366,19 +404,20 @@ public class RyMessageUtils {
      * @param player  The player who is sending the broadcast.
      * @param message The message you wish to be sent to players.
      */
-    public static void broadcast(Player player, String message) {
-        if (getAudiences() != null) {
-            getAudiences().players().sendMessage(adventureTranslate(player, message));
+    public void broadcast(Player player, String message) {
+        if (this.getAudiences() != null) {
+            this.getAudiences().players().sendMessage(this.adventureTranslate(player, message));
         } else {
-            Bukkit.getConsoleSender().sendMessage(translate(player, message));
+            Bukkit.getConsoleSender().sendMessage(this.translate(player, message));
         }
     }
 
     /**
      * Sends a message to console saying that the license has been authenticated.
      */
-    public static void sendLicenseSucessful() {
-        sendConsole(true, breaker,
+    @Override
+    public void sendLicenseSucessful() {
+        this.sendConsole(true, breaker,
                 "&fLicense has been authenticated. ",
                 breaker);
     }
@@ -388,12 +427,13 @@ public class RyMessageUtils {
      *
      * @param error The error that occurred.
      */
-    public static void sendLicenseError(String error) {
-        sendConsole(true, breaker,
+    @Override
+    public void sendLicenseError(String error) {
+        this.sendConsole(true, this.breaker,
                 "&fAn error occurred while verifying your license.",
                 "&fError: &c" + error,
-                getSupportMessage(),
-                breaker);
+                this.getSupportMessage(),
+                this.breaker);
     }
 
     /**
@@ -402,14 +442,15 @@ public class RyMessageUtils {
      * @param error         The error that occurred.
      * @param disablePlugin Should the plugin be disabled?
      */
-    public static void sendLicenseError(String error, boolean disablePlugin) {
-        sendConsole(true, breaker,
+    @Override
+    public void sendLicenseError(String error, boolean disablePlugin) {
+        this.sendConsole(true, this.breaker,
                 "&fAn error occurred while verifying your license.",
                 "&fError: &c" + error,
-                getSupportMessage(),
-                breaker);
+                this.getSupportMessage(),
+                this.breaker);
         if (disablePlugin && instance != null) {
-              Bukkit.getPluginManager().disablePlugin(instance);
+              Bukkit.getPluginManager().disablePlugin(this.instance);
         }
     }
 
@@ -418,12 +459,13 @@ public class RyMessageUtils {
      *
      * @param error The error that occurred.
      */
-    public static void sendPluginError(String error) {
-        sendConsole(true, breaker,
+    @Override
+    public void sendPluginError(String error) {
+        this.sendConsole(true, this.breaker,
                 "&fAn error has occurred.",
                 "&fError: &c" + error,
-                getSupportMessage(),
-                breaker);
+                this.getSupportMessage(),
+                this.breaker);
     }
 
     /**
@@ -432,14 +474,15 @@ public class RyMessageUtils {
      * @param error         The error that has occurred.
      * @param disablePlugin Should the plugin be disabled due to the error?
      */
-    public static void sendPluginError(String error, boolean disablePlugin) {
-        sendConsole(true, breaker,
+    @Override
+    public void sendPluginError(String error, boolean disablePlugin) {
+        this.sendConsole(true, this.breaker,
                 "&fAn error has occurred.",
                 "&fError: &c" + error,
-                getSupportMessage(),
-                breaker);
-        if (disablePlugin && instance != null) {
-            Bukkit.getPluginManager().disablePlugin(instance);
+                this.getSupportMessage(),
+                this.breaker);
+        if (disablePlugin && this.instance != null) {
+            Bukkit.getPluginManager().disablePlugin(this.instance);
         }
     }
 
@@ -450,14 +493,15 @@ public class RyMessageUtils {
      * @param exception The exception that occurred.
      * @param debug     Is debug enabled?
      */
-    public static void sendPluginError(String error, Exception exception, boolean debug) {
-        sendConsole(true, breaker,
+    @Override
+    public void sendPluginError(String error, Exception exception, boolean debug) {
+        this.sendConsole(true, this.breaker,
                 "&fAn error has occurred.",
                 "&fError: &c" + error,
-                getSupportMessage(),
-                breaker);
+                this.getSupportMessage(),
+                this.breaker);
         if (debug) {
-            sendConsole(true, "&fAs you have debug enabled in your config.yml, the following stacktrace error is due to this:");
+            this.sendConsole(true, "&fAs you have debug enabled in your config.yml, the following stacktrace error is due to this:");
             exception.printStackTrace();
         }
     }
@@ -470,18 +514,19 @@ public class RyMessageUtils {
      * @param debug         Is debug enabled?
      * @param disablePlugin Should the plugin be disabled due to the error?
      */
-    public static void sendPluginError(String error, Exception exception, boolean debug, boolean disablePlugin) {
-        sendConsole(true, breaker,
+    @Override
+    public void sendPluginError(String error, Exception exception, boolean debug, boolean disablePlugin) {
+        this.sendConsole(true, this.breaker,
                 "&fAn error has occurred.",
                 "&fError: &c" + error,
-                getSupportMessage(),
-                breaker);
+                this.getSupportMessage(),
+                this.breaker);
         if (debug) {
-            sendConsole(true, "&fAs you have debug enabled in your config.yml, the following stacktrace error is due to this:");
+            this.sendConsole(true, "&fAs you have debug enabled in your config.yml, the following stacktrace error is due to this:");
             exception.printStackTrace();
         }
-        if (disablePlugin && instance != null) {
-            Bukkit.getPluginManager().disablePlugin(instance);
+        if (disablePlugin && this.instance != null) {
+            Bukkit.getPluginManager().disablePlugin(this.instance);
         }
     }
 

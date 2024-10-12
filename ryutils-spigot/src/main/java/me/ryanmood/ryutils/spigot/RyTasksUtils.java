@@ -1,9 +1,9 @@
 package me.ryanmood.ryutils.spigot;
 
 import lombok.Getter;
-import org.bukkit.plugin.java.JavaPlugin;
+import me.ryanmood.ryutils.base.RyTasksBase;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -16,7 +16,7 @@ import java.util.*;
  */
 
 @SuppressWarnings("unused")
-public class RyTasksUtils {
+public class RyTasksUtils implements RyTasksBase {
 
     @Getter
     private static final Map<Integer, BukkitTask> tasks = new HashMap<>();
@@ -27,8 +27,11 @@ public class RyTasksUtils {
      * @param plugin   The instance of the plugin you are using.
      * @param callable The Runnable code you would like to happen.
      */
-    public static void run(@NotNull JavaPlugin plugin, Runnable callable) {
-        BukkitTask task = plugin.getServer().getScheduler().runTask(plugin, callable);
+    @Override
+    public void run(Object plugin, Runnable callable) {
+        if (!(plugin instanceof Plugin)) return;
+        Plugin instance = (Plugin) plugin;
+        BukkitTask task = instance.getServer().getScheduler().runTask(instance, callable);
         tasks.put(task.getTaskId(), task);
     }
 
@@ -38,8 +41,10 @@ public class RyTasksUtils {
      * @param plugin   The instance of the plugin you are using.
      * @param callable The Runnable code you would like to happen.
      */
-    public static void runAsync(@NotNull JavaPlugin plugin, Runnable callable) {
-        BukkitTask task = plugin.getServer().getScheduler().runTaskAsynchronously(plugin, callable);
+    public void runAsync(Object plugin, Runnable callable) {
+        if (!(plugin instanceof Plugin)) return;
+        Plugin instance = (Plugin) plugin;
+        BukkitTask task = instance.getServer().getScheduler().runTaskAsynchronously(instance, callable);
         tasks.put(task.getTaskId(), task);
     }
 
@@ -50,8 +55,10 @@ public class RyTasksUtils {
      * @param callable The Runnable code you would like to happen.
      * @param delay    The delay before the runnable runs.
      */
-    public static void runLater(@NotNull JavaPlugin plugin, Runnable callable, long delay) {
-        BukkitTask task = plugin.getServer().getScheduler().runTaskLater(plugin, callable, delay);
+    public void runLater(Object plugin, Runnable callable, long delay) {
+        if (!(plugin instanceof Plugin)) return;
+        Plugin instance = (Plugin) plugin;
+        BukkitTask task = instance.getServer().getScheduler().runTaskLater(instance, callable, delay);
         tasks.put(task.getTaskId(), task);
     }
 
@@ -62,8 +69,10 @@ public class RyTasksUtils {
      * @param callable The Runnable code you would like to happen.
      * @param delay    The delay before the runnable runs.
      */
-    public static void runAsyncLater(@NotNull JavaPlugin plugin, Runnable callable, long delay) {
-        BukkitTask task = plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, callable, delay);
+    public void runAsyncLater(Object plugin, Runnable callable, long delay) {
+        if (!(plugin instanceof Plugin)) return;
+        Plugin instance = (Plugin) plugin;
+        BukkitTask task = instance.getServer().getScheduler().runTaskLaterAsynchronously(instance, callable, delay);
         tasks.put(task.getTaskId(), task);
     }
 
@@ -75,8 +84,10 @@ public class RyTasksUtils {
      * @param delay    The delay before the runnable runs.
      * @param interval The interval before the runnable runs again.
      */
-    public static void runTimer(@NotNull JavaPlugin plugin, Runnable callable, long delay, long interval) {
-        BukkitTask task = plugin.getServer().getScheduler().runTaskTimer(plugin, callable, delay, interval);
+    public void runTimer(Object plugin, Runnable callable, long delay, long interval) {
+        if (!(plugin instanceof Plugin)) return;
+        Plugin instance = (Plugin) plugin;
+        BukkitTask task = instance.getServer().getScheduler().runTaskTimer(instance, callable, delay, interval);
         tasks.put(task.getTaskId(), task);
     }
 
@@ -88,16 +99,20 @@ public class RyTasksUtils {
      * @param delay    The delay before the runnable runs.
      * @param interval The interval before the runnable runs again.
      */
-    public static void runAsyncTimer(@NotNull JavaPlugin plugin, Runnable callable, long delay, long interval) {
-        BukkitTask task = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, callable, delay, interval);
+    public void runAsyncTimer(Object plugin, Runnable callable, long delay, long interval) {
+        if (!(plugin instanceof Plugin)) return;
+        Plugin instance = (Plugin) plugin;
+        BukkitTask task = instance.getServer().getScheduler().runTaskTimerAsynchronously(instance, callable, delay, interval);
         tasks.put(task.getTaskId(), task);
     }
 
-    public static BukkitTask getById(int id) {
+    @Override
+    public BukkitTask getById(int id) {
         return tasks.get(id);
     }
 
-    public static void cancel(int id) {
+    @Override
+    public void cancel(int id) {
         BukkitTask task = tasks.get(id);
         if (task == null) return;
 
@@ -105,7 +120,8 @@ public class RyTasksUtils {
         tasks.remove(id);
     }
 
-    public static void cancelAll() {
+    @Override
+    public void cancelAll() {
         for (BukkitTask task : tasks.values()) {
             task.cancel();
             tasks.remove(task.getTaskId());
