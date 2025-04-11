@@ -6,11 +6,11 @@
     <parent>
         <groupId>me.ryanmood.ryutils</groupId>
         <artifactId>RyUtils</artifactId>
-        <version>0.4.9-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>ryutils-discord</artifactId>
-    <version>0.4.9-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>5.2.1</version>
+            <version>5.3.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>

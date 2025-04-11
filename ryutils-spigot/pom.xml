@@ -7,7 +7,7 @@
     <parent>
         <groupId>me.ryanmood.ryutils</groupId>
         <artifactId>RyUtils</artifactId>
-        <version>0.4.9-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>RyUtils-Spigot</artifactId>
@@ -99,27 +99,41 @@
     </repositories>
 
     <dependencies>
+        <!-- RyBASE -->
+        <dependency>
+            <groupId>me.ryanmood.ryutils</groupId>
+            <artifactId>RyUtils-Base</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- SPIGOT API -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.21.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- PLACEHOLDERAPI -->
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.11.6</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- XSERIES -->
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>11.3.0</version>
+            <version>13.2.0</version>
         </dependency>
+
+        <!-- DISCORD -->
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>5.2.1</version>
+            <version>5.3.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
@@ -128,12 +142,16 @@
             </exclusions>
             <scope>provided</scope>
         </dependency>
+
+        <!-- MONGODB -->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
             <version>5.2.1</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- ADVENTURE API / MINI MESSAGE -->
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
@@ -146,10 +164,13 @@
             <version>4.3.2</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- MONGODB -->
         <dependency>
-            <groupId>me.ryanmood.ryutils</groupId>
-            <artifactId>RyUtils-Base</artifactId>
-            <version>0.4.9-SNAPSHOT</version>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>5.4.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
