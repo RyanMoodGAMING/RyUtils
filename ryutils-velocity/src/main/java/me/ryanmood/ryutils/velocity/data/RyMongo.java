@@ -6,74 +6,39 @@ import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import lombok.AccessLevel;
 import lombok.Getter;
-import me.ryanmood.ryutils.velocity.RyMessageUtils;
-import org.jetbrains.annotations.Nullable;
+import me.ryanmood.ryutils.base.data.RyMongoBase;
+import me.ryanmood.ryutils.velocity.RyMessageUtil;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@SuppressWarnings("unused")
-public abstract class RyMongo {
+@Getter
+public abstract class RyMongo implements RyMongoBase {
 
     private boolean disableLogging;
-    @Getter
     private boolean connected;
 
+    @Getter(AccessLevel.PRIVATE)
     private MongoClient client;
-    @Getter
     private MongoDatabase database;
 
-    /**
-     * Create a MongoDB Connection.
-     *
-     * @param address  The IP/URL of the database.
-     * @param database The name of the database.
-     * @param username The username of the database.
-     * @param password The password of the database.
-     */
     public RyMongo(String address, String database, String username, String password) {
         this(address, 27017, database, username, password, true, true, true);
     }
 
-    /**
-     * Create a MongoDB Connection.
-     *
-     * @param address  The IP/URL of the database.
-     * @param port     The port of the database.
-     * @param database The name of the database.
-     * @param username The username of the database.
-     * @param password The password of the database.
-     * @param auth     Is auth database required?
-     */
     public RyMongo(String address, int port, String database, String username, String password, boolean auth) {
         this(address, port, database, username, password, auth, true, true);
     }
 
-    /**
-     * Create a MongoDB Connection.
-     *
-     * @param address  The IP/URL of the database.
-     * @param port     The port of the database.
-     * @param database The name of the database.
-     * @param username The username of the database.
-     * @param password The password of the database.
-     * @param auth     Is auth database required?
-     * @param ssl      Does SSL need to be used?
-     * @param disableLogging Should MongoDB logger be disabled?
-     */
     public RyMongo(String address, int port, String database, String username, String password, boolean auth, boolean ssl, boolean disableLogging) {
         StringBuilder uriBuilder = new StringBuilder("mongodb://");
         uriBuilder.append(address).append(":").append(port);
 
-        if (auth) {
-            uriBuilder.append("/?authSource=").append(database).append("&retryWrites=true");
-        }
-
-        if (ssl) {
-            uriBuilder.append("&ssl=true");
-        }
+        if (auth) uriBuilder.append(database).append("&retryWrites=true");
+        if (ssl) uriBuilder.append("&ssl=true");
 
         ConnectionString connectionString = new ConnectionString(uriBuilder.toString());
 
@@ -84,15 +49,22 @@ public abstract class RyMongo {
         MongoCredential credential = MongoCredential.createCredential(username, database, password.toCharArray());
         builder.credential(credential);
 
-        this.connect(builder, connectionString.getDatabase(), disableLogging);
+        String databaseName = connectionString.getDatabase();
+        if (databaseName == null) databaseName = database;
+
+        this.connect(builder, databaseName, disableLogging);
     }
 
-    /**
-     * Create a MongoDB Connection
-     *
-     * @param uri            The connection URI.
-     * @param disableLogging Should MongoDB logger be disabled?
-     */
+    public RyMongo(String uri, String database, boolean disableLogging) {
+        ConnectionString connectionString = new ConnectionString(uri);
+
+        MongoClientSettings.Builder builder = MongoClientSettings.builder()
+                .applyConnectionString(connectionString)
+                .applyToConnectionPoolSettings(connection -> connection.maxConnectionIdleTime(30, TimeUnit.SECONDS));
+
+        this.connect(builder, database, disableLogging);
+    }
+
     public RyMongo(String uri, boolean disableLogging) {
         ConnectionString connectionString = new ConnectionString(uri);
 
@@ -100,18 +72,12 @@ public abstract class RyMongo {
                 .applyConnectionString(connectionString)
                 .applyToConnectionPoolSettings(connection -> connection.maxConnectionIdleTime(30, TimeUnit.SECONDS));
 
-        this.connect(builder, connectionString.getDatabase(), disableLogging);
+        String databaseName = connectionString.getDatabase();
+        if (databaseName == null || databaseName.isEmpty()) databaseName = "RyMongo";
+
+        this.connect(builder, databaseName, disableLogging);
     }
 
-    /**
-     * Create a MongoDB Connection.
-     *
-     * @param uri            The connection URI.
-     * @param database       The name of the database.
-     * @param username       The username of the user.
-     * @param password       The password of the user.
-     * @param disableLogging Should MongoDB logger be disabled?
-     */
     public RyMongo(String uri, String database, String username, String password, boolean disableLogging) {
         ConnectionString connectionString = new ConnectionString(uri);
 
@@ -122,49 +88,40 @@ public abstract class RyMongo {
         MongoCredential credential = MongoCredential.createCredential(username, database, password.toCharArray());
         builder.credential(credential);
 
-        this.connect(builder, connectionString.getDatabase(), disableLogging);
+        String databaseName = connectionString.getDatabase();
+        if (databaseName == null || databaseName.isEmpty()) databaseName = database;
+
+        this.connect(builder, databaseName, disableLogging);
     }
 
     /**
      * Initialize the database's collections.
      */
-    protected abstract void initCollections();
+    @Override
+    public abstract void initCollections();
 
-
-    /**
-     * Connect to a MongoDB Database.
-     *
-     * @param builder        The settings builder.
-     * @param database       Name of the database.
-     * @param disableLogging Should logs be sent?
-     */
-    private void connect(MongoClientSettings.Builder builder, @Nullable String database, boolean disableLogging) {
+    private void connect(MongoClientSettings.Builder builder, String database, boolean disableLogging) {
         MongoClientSettings settings = builder.build();
-
         this.client = MongoClients.create(settings);
 
-        String databaseName = database;
-        if (databaseName == null) {
-            databaseName = "RyUtils";
-        }
-
-        this.database = this.client.getDatabase(databaseName);
-
+        if (database == null || database.isEmpty()) database = "RyMongo";
+        this.database = this.client.getDatabase(database);
         this.initCollections();
 
         try {
-            this.client.listDatabaseNames().first();
+            this.client.listDatabases().first();
             this.connected = true;
-        } catch (Exception ignored) {
-            RyMessageUtils.sendPluginError("MongoDB failed to connect to database " + databaseName);
+        } catch (Exception exception) {
+            RyMessageUtil.getUtil().sendError("MongoDB failed to connect to database " + database);
             this.connected = false;
         }
 
         this.disableLogging = disableLogging;
 
-        if (this.disableLogging) {
+        if (this.isDisableLogging()) {
             final Logger mongoLogger = Logger.getLogger("org.mongodb.driver.cluster");
             mongoLogger.setLevel(Level.SEVERE);
         }
     }
+
 }
