@@ -6,17 +6,19 @@
 
     <groupId>me.ryanmood.ryutils</groupId>
     <artifactId>RyUtils</artifactId>
-    <version>0.4.9-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <name>RyUtils</name>
 
     <modules>
+        <module>ryutils-base</module>
         <module>ryutils-spigot</module>
         <module>ryutils-bungee</module>
         <module>ryutils-data</module>
         <module>ryutils-velocity</module>
         <module>ryutils-discord</module>
-        <module>ryutils-base</module>
+        <module>ryutils-folia</module>
+        <module>ryutils-paper</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -135,23 +137,35 @@
     </repositories>
 
     <dependencies>
+        <!-- LOMBOK -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.38</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- GSON -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.13.1</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- Annotations -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>26.0.2</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- Lang 3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.17.0</version>
         </dependency>
     </dependencies>
 </project>

@@ -7,7 +7,7 @@
     <parent>
         <artifactId>RyUtils</artifactId>
         <groupId>me.ryanmood.ryutils</groupId>
-        <version>0.4.9-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>RyUtils-Bungee</artifactId>
@@ -70,13 +70,23 @@
     </repositories>
 
     <dependencies>
+        <!-- RyBASE -->
+        <dependency>
+            <groupId>me.ryanmood.ryutils</groupId>
+            <artifactId>RyUtils-Base</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- BUNGEECORD -->
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
-            <version>1.20-R0.2</version>
+            <version>1.21-R0.2-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
+
+        <!-- DISCORD -->
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
@@ -89,12 +99,16 @@
             </exclusions>
             <scope>provided</scope>
         </dependency>
+
+        <!-- MONGODB -->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
             <version>5.5.0</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- ADVENTURE -->
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
@@ -107,5 +121,6 @@
             <version>4.3.2</version>
             <scope>compile</scope>
         </dependency>
+
     </dependencies>
 </project>

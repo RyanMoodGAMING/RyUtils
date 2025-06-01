@@ -3,67 +3,69 @@ package me.ryanmood.ryutils.bungee;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import lombok.AccessLevel;
 import lombok.Getter;
+import me.ryanmood.ryutils.base.RyPluginMessageBase;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 
-/*
- * This software and its content is copyright of RyanMoodGAMING - © RyanMoodGAMING 2023. All rights reserved.
- * Any redistribution or reproduction of part or all of the contents in any form is prohibited other than the following:
- * you may print or download to a local hard disk extracts for your personal and non-commercial use only
- * you may copy the content to individual third parties for their personal use, but only if you acknowledge the website as the source of the material
- * You may not, except with our express written permission, distribute or commercially exploit the content. Nor may you transmit it or store it in any other website or other form of electronic retrieval system.
- */
+@Getter
+public abstract class RyPluginMessages implements RyPluginMessageBase<ProxiedPlayer>, Listener {
 
-@SuppressWarnings("unused")
-public abstract class RyPluginMessages implements Listener {
+    @Getter(AccessLevel.PRIVATE)
+    private Plugin plugin;
 
-    @Getter
     private String outgoingChannelName;
-    @Getter
     private String incomingChannelName;
 
     /**
-     * Create a Plugin Message instance.
+     * Initialize the plugin message instance.
+     *
+     * @param plugin The instance of the plugin instance.
      */
-    public RyPluginMessages() {
-        this("BungeeCord", "Bungeecord");
+    public RyPluginMessages(Plugin plugin) {
+        this(plugin, "BungeeCord", "BungeeCord");
     }
 
     /**
-     * Create a Plugin Message instance.
+     * Initialize the plugin message instance.
      *
+     * @param plugin              The instance of the plugin instance.
      * @param outgoingChannelName The name of the outgoing channel.
      * @param incomingChannelName The name of the incoming channel.
      */
-    public RyPluginMessages(String outgoingChannelName, String incomingChannelName) {
+    public RyPluginMessages(Plugin plugin, String outgoingChannelName, String incomingChannelName) {
+        this.plugin = plugin;
         this.outgoingChannelName = outgoingChannelName;
         this.incomingChannelName = incomingChannelName;
 
-        RySetup.getPluginInstance().getProxy().registerChannel(this.outgoingChannelName);
-        RySetup.getPluginInstance().getProxy().getPluginManager().registerListener(RySetup.getPluginInstance(), this);
+        plugin.getProxy().registerChannel(outgoingChannelName);
+        plugin.getProxy().registerChannel(incomingChannelName);
+        plugin.getProxy().getPluginManager().registerListener(plugin, this);
     }
 
     /**
-     * The actions that occur when a plugin message is recieved.
+     * The actions that occur when a plugin message is received.
      *
-     * @param subchannel The sub channel of the message.
+     * @param subchannel The subchannel of the message.
      * @param input      The message's message.
      */
     protected abstract void receievedActions(String subchannel, ByteArrayDataInput input);
 
     @EventHandler
-    public void onPluginMessageReceive(PluginMessageEvent event) {
+    public void onPluginMessaegeReceived(PluginMessageEvent event) {
         if (!event.getTag().equalsIgnoreCase(this.getIncomingChannelName())) return;
+
         ByteArrayDataInput input = ByteStreams.newDataInput(event.getData());
         String subchannel = input.readUTF();
 
-        receievedActions(subchannel, input);
+        this.receievedActions(subchannel, input);
     }
 
     /**
@@ -104,5 +106,4 @@ public abstract class RyPluginMessages implements Listener {
             player.disconnect(reason);
         }
     }
-
 }
