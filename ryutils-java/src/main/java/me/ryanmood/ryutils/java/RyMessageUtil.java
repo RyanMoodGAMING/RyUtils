@@ -37,7 +37,7 @@ public class RyMessageUtil {
      */
     public String translate(String message) {
         for (Colours colour : Colours.values()) {
-            message.replace(colour.getCode(), colour.getTranslation());
+            message = message.replaceAll(colour.getCode(), colour.getTranslation());
         }
 
         return message;
