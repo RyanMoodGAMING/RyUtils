@@ -40,7 +40,7 @@ public class RyMessageUtil {
             message = message.replaceAll(colour.getCode(), colour.getTranslation());
         }
 
-        return message;
+        return message + " " + Colours.RESET.getTranslation();
     }
 
     /**
