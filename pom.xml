@@ -19,6 +19,7 @@
         <module>ryutils-discord</module>
         <module>ryutils-folia</module>
         <module>ryutils-paper</module>
+        <module>ryutils-java</module>
     </modules>
 
     <packaging>pom</packaging>
