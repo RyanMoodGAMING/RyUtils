@@ -15,9 +15,9 @@ public class RyMessageUtil {
     @Setter(AccessLevel.PRIVATE)
     private static RyMessageUtil instance;
 
-    private String prefix = "&0» &f";
-    private String errorPrefix = "&cError &0» &c";
-    private String breaker = "&0------------------------------------";
+    private String prefix = "&7» &f";
+    private String errorPrefix = "&cError &7» &c";
+    private String breaker = "&7------------------------------------";
     private String supportMessage = "Please contact the plugin author for support.";
 
     public RyMessageUtil() {

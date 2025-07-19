@@ -12,7 +12,8 @@ public enum Colours {
     BLUE("&b", "\033[0;34m"),
     PURPLE("&d", "\033[0;35m"),
     CYAN("&3", "\033[0;36m"),
-    WHITE("&f", "\033[0;37m");
+    WHITE("&f", "\033[0m"),
+    GRAY("&7", "\033[0;37m");
 
 
     private final String code;
