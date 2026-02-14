@@ -20,6 +20,8 @@
         <module>ryutils-folia</module>
         <module>ryutils-paper</module>
         <module>ryutils-java</module>
+        <module>ryutils-hytale</module>
+        <module>ryutils-hytale</module>
     </modules>
 
     <packaging>pom</packaging>
