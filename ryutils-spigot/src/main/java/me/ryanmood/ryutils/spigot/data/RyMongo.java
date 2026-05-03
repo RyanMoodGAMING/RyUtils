@@ -21,7 +21,7 @@ public abstract class RyMongo implements RyMongoBase {
     private boolean disableLogging;
     private boolean connected;
 
-    @Getter(AccessLevel.PRIVATE)
+    @Getter
     private MongoClient client;
     private MongoDatabase database;
 
