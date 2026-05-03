@@ -38,12 +38,14 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
     public RyMessageUtil(Plugin plugin) {
         this.plugin = plugin;
         this.audiences = BukkitAudiences.create(plugin);
+        instance = this;
     }
 
     public RyMessageUtil(Plugin plugin, String prefix) {
         this.plugin = plugin;
         this.prefix = prefix;
         this.audiences = BukkitAudiences.create(plugin);
+        instance = this;
     }
 
     /**

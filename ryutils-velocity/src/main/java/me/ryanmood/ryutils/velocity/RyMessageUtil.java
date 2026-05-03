@@ -50,13 +50,14 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSource> {
     public RyMessageUtil(PluginContainer pluginContainer, String prefix) {
         this.plugin = pluginContainer;
         this.prefix = prefix;
+        instance = this;
     }
 
     public RyMessageUtil(PluginContainer pluginContainer, ProxyServer server, String prefix) {
         this.plugin = pluginContainer;
         this.server = server;
         this.prefix = prefix;
-
+        instance = this;
     }
 
     @Inject

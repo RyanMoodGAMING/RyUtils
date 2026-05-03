@@ -45,12 +45,14 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
     public RyMessageUtil(JavaPlugin plugin) {
         this.plugin = plugin;
         this.audiences = HytaleAudiences.create(plugin);
+        instance = this;
     }
 
     public RyMessageUtil(JavaPlugin plugin, String prefix) {
         this.plugin = plugin;
         this.prefix = prefix;
         this.audiences = HytaleAudiences.create(plugin);
+        instance = this;
     }
 
     /**

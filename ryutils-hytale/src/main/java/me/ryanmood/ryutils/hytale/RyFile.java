@@ -8,7 +8,7 @@ import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
 import lombok.Getter;
-import me.ryanmood.ryutils.hytale.base.RyFileBase;
+import me.ryanmood.ryutils.base.RyFileBase;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
