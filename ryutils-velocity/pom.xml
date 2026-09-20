@@ -7,11 +7,10 @@
     <parent>
         <artifactId>RyUtils</artifactId>
         <groupId>me.ryanmood.ryutils</groupId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>RyUtils-Velocity</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
