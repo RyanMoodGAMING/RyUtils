@@ -50,6 +50,10 @@
                                     <pattern>net.kyori.adventure</pattern>
                                     <shadedPattern>me.ryanmood.ryutils.bungee.lib.adventure</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>net.kyori</pattern>
+                                    <shadedPattern>me.ryanmood.ryutils.bungee.lib.kyori</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
