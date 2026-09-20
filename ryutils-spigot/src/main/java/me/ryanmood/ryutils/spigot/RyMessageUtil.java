@@ -7,27 +7,53 @@ import lombok.Setter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.ryanmood.ryutils.base.RyMessagesBase;
 import me.ryanmood.ryutils.base.exceptions.UninitializedUtilException;
+import me.ryanmood.ryutils.base.patterns.impl.adventure.AmpersandPattern;
+import me.ryanmood.ryutils.spigot.patterns.AdventureHexPattern;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
 
-    @Setter(AccessLevel.PRIVATE)
-    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE) @Getter(AccessLevel.PRIVATE)
     public Plugin plugin;
     @Setter(AccessLevel.PRIVATE)
-    public BukkitAudiences audiences;
+    private BukkitAudiences audiences;
+
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private final AdventureHexPattern adventureHexPattern = new AdventureHexPattern();
+    private final AmpersandPattern ampersandPattern = new AmpersandPattern();
+
+    private final LegacyComponentSerializer legacyScoreboardSerializer = LegacyComponentSerializer.builder()
+            .character('§')
+            .build();
+    private final LegacyComponentSerializer hexScoreboardSerializer = LegacyComponentSerializer.builder()
+            .character('§')
+            .hexColors()
+            .useUnusualXRepeatedCharacterHexFormat()
+            .build();
+    private final Map<Class<?>, Optional<Method>> richMessageMethods = new ConcurrentHashMap<>();
+    private final AtomicBoolean nativeRichMessageLogged = new AtomicBoolean();
+    private final AtomicBoolean nativeRichMessageFallbackLogged = new AtomicBoolean();
+
     public static RyMessageUtil instance;
 
     private String prefix = "&7» &f";
@@ -48,6 +74,7 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
         instance = this;
     }
 
+
     /**
      * Translate a message from plain text to be formatted (usually with legacy colours).
      *
@@ -56,11 +83,8 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
      */
     @Override
     public String translate(String message) {
-        if (!(XReflection.MINOR_NUMBER > 15)) return ChatColor.translateAlternateColorCodes('&', message);
-
-        message.replaceAll("%prefix%", this.getPrefix());
-        message.replaceAll("%error_prefix%", this.getErrorPrefix());
-        return HexAPI.process(message);
+        if (this.hasHexColours()) return HexAPI.process(message);
+        else return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     /**
@@ -70,10 +94,10 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
      * @param message The message you wish to be formatted.
      * @return A formatted string.
      */
+    @Override
     public String translate(Player player, String message) {
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        if (this.plugin.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null)
             message = PlaceholderAPI.setPlaceholders(player, message);
-        }
 
         return this.translate(message);
     }
@@ -86,11 +110,11 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
      */
     @Override
     public Component adventureTranslate(String message) {
-        message = this.legacyToAdventure(message);
-        message.replaceAll("%prefix%", this.getPrefix())
-               .replaceAll("%error_prefix%", this.getErrorPrefix());
+        message = message.replaceAll("%prefix%", this.prefix)
+                .replaceAll("%error-prefix%", this.errorPrefix)
+                .replaceAll("%support%", this.supportMessage);
 
-        return MiniMessage.miniMessage().deserialize(message);
+        return this.miniMessage.deserialize(this.legacyToAdventure(message));
     }
 
     /**
@@ -100,12 +124,27 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
      * @param message The message you wish to be formatted.
      * @return A formatted string.
      */
+    @Override
     public Component adventureTranslate(Player player, String message) {
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        if (this.plugin.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null)
             message = PlaceholderAPI.setPlaceholders(player, message);
-        }
 
         return this.adventureTranslate(message);
+    }
+
+    /**
+     * Renders legacy ampersand codes and MiniMessage for string-based scoreboards.
+     * RGB is retained on supported services and downsampled on legacy versions.
+     *
+     * @param line The line you wish to be formatted.
+     * @return A formatted string.
+     */
+    public String translateScoreboard(String line) {
+        Component component = this.adventureTranslate(line);
+        LegacyComponentSerializer serializer = this.hasHexColours() ? hexScoreboardSerializer
+                : legacyScoreboardSerializer;
+
+        return serializer.serialize(component);
     }
 
     /**
@@ -114,9 +153,11 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
      * @param player  The player who you wish to receive the message.
      * @param message The message you wish to send the player.
      */
+    @Override
     public void sendPlayer(Player player, String message) {
-        if (this.audiences == null) player.sendMessage(this.translate(player, message));
-        else this.getAudiences().player(player).sendMessage(this.adventureTranslate(player, message));
+        if (message.equalsIgnoreCase("none")) return;
+        if (this.sendNativeMessage(player, message)) return;
+        else this.getAudiences().player(player).sendMessage(this.adventureTranslate(message));
     }
 
     /**
@@ -125,6 +166,7 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
      * @param player   The player who you wish to receive the message.
      * @param messages The messages you wish to send the player.
      */
+    @Override
     public void sendPlayer(Player player, String... messages) {
         Arrays.stream(messages).forEach(msg -> this.sendPlayer(player, msg));
     }
@@ -135,6 +177,7 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
      * @param player   The player who you wish to receive the message.
      * @param messages The messages you wish to send the player.
      */
+    @Override
     public void sendPlayer(Player player, List<String> messages) {
         messages.forEach(msg -> this.sendPlayer(player, msg));
     }
@@ -142,32 +185,40 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
     /**
      * Send a sender a message.
      *
-     * @param sender  The sender who you wish to receive the message.
-     * @param message The message you wish to send the player.
+     * @param commandSender The sender who you wish to receive the message.
+     * @param message       The message you wish to send the player.
      */
-    public void sendSender(CommandSender sender, String message) {
-        if (this.audiences == null) sender.sendMessage(this.translate(message));
-        else this.getAudiences().sender(sender).sendMessage(this.adventureTranslate(message));
+    @Override
+    public void sendSender(CommandSender commandSender, String message) {
+        if (commandSender instanceof Player) {
+            this.sendPlayer((Player) commandSender, message);
+            return;
+        }
+
+        if (sendNativeMessage(commandSender, message)) return;
+        else this.getAudiences().sender(commandSender).sendMessage(this.adventureTranslate(message));
     }
 
     /**
      * Send a sender multiple messages.
      *
-     * @param sender   The sender who you wish to receive the message.
-     * @param messages The messages you wish to send the player.
+     * @param commandSender The sender who you wish to receive the message.
+     * @param messages      The messages you wish to send the player.
      */
-    public void sendSender(CommandSender sender, String... messages) {
-        Arrays.stream(messages).forEach(msg -> this.sendSender(sender, msg));
+    @Override
+    public void sendSender(CommandSender commandSender, String... messages) {
+        Arrays.stream(messages).forEach(msg -> this.sendSender(commandSender, msg));
     }
 
     /**
      * Send a sender multiple messages.
      *
-     * @param sender   The sender who you wish to receive the message.
-     * @param messages The messages you wish to send the player.
+     * @param commandSender The sender who you wish to receive the message.
+     * @param messages      The messages you wish to send the player.
      */
-    public void sendSender(CommandSender sender, List<String> messages) {
-        messages.forEach(msg -> this.sendSender(sender, msg));
+    @Override
+    public void sendSender(CommandSender commandSender, List<String> messages) {
+        messages.forEach(msg -> this.sendSender(commandSender, msg));
     }
 
     /**
@@ -178,10 +229,9 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
      */
     @Override
     public void sendConsole(boolean prefix, String message) {
-        if (prefix) message = this.getPrefix() + message;
+        if (prefix) message = this.prefix + message;
 
-        if (this.audiences == null) Bukkit.getConsoleSender().sendMessage(this.translate(message));
-        else this.getAudiences().console().sendMessage(this.adventureTranslate(message));
+        this.getAudiences().console().sendMessage(this.adventureTranslate(message));
     }
 
     /**
@@ -213,8 +263,7 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
      */
     @Override
     public void broadcast(String message) {
-        if (this.audiences == null) Bukkit.broadcastMessage(this.translate(message));
-        else this.getAudiences().all().sendMessage(this.adventureTranslate(message));
+        this.audiences.all().sendMessage(this.adventureTranslate(message));
     }
 
     /**
@@ -227,8 +276,7 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
     public void broadcast(String permission, String message) {
         for (Player online : Bukkit.getOnlinePlayers()) {
             if (online.hasPermission(permission)) {
-                if (this.audiences == null) online.sendMessage(this.translate(message));
-                else this.audiences.player(online).sendMessage(this.adventureTranslate(message));
+                this.audiences.player(online).sendMessage(this.adventureTranslate(message));
             }
         }
     }
@@ -239,9 +287,9 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
      * @param player  The player to be used for formatting (placeholderapi etc).
      * @param message The message to be broadcasted.
      */
+    @Override
     public void broadcast(Player player, String message) {
-        if (this.audiences == null) Bukkit.broadcastMessage(this.translate(player, message));
-        else this.getAudiences().all().sendMessage(this.adventureTranslate(player, message));
+        this.getAudiences().all().sendMessage(this.adventureTranslate(player, message));
     }
 
     /**
@@ -251,11 +299,11 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
      * @param permission The permission needed to see the broadcast.
      * @param message    The message to be broadcasted.
      */
+    @Override
     public void broadcast(Player player, String permission, String message) {
         for (Player online : Bukkit.getOnlinePlayers()) {
             if (online.hasPermission(permission)) {
-                if (this.audiences == null) online.sendMessage(this.translate(player, message));
-                else this.audiences.player(online).sendMessage(this.adventureTranslate(player, message));
+                this.audiences.player(online).sendMessage(this.adventureTranslate(player, message));
             }
         }
     }
@@ -385,6 +433,10 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
         if (disable && this.getPlugin() != null) Bukkit.getPluginManager().disablePlugin(this.getPlugin());
     }
 
+    public boolean hasHexColours() {
+        return XReflection.MAJOR_NUMBER >= 16;
+    }
+
     /**
      * Get the instance of the util.
      *
@@ -395,4 +447,32 @@ public class RyMessageUtil implements RyMessagesBase<Player, CommandSender> {
         else return instance;
     }
 
+    private boolean sendNativeMessage(Object player, String message) {
+        Optional<Method> method = this.richMessageMethods.computeIfAbsent(player.getClass(), this::findNativeMessageMethod);
+        if (!method.isPresent()) {
+            return false;
+        }
+
+        try {
+            if (this.getPlugin().getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                message = PlaceholderAPI.setPlaceholders((Player) player, message);
+            }
+
+            method.get().invoke(player, this.adventureTranslate(message));
+            this.nativeRichMessageLogged.compareAndSet(false, true);
+
+            return true;
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            this.nativeRichMessageFallbackLogged.set(false);
+            return false;
+        }
+    }
+
+    private Optional<Method> findNativeMessageMethod(Class<?> playerClass) {
+        try {
+            return Optional.of(playerClass.getMethod("sendRichMessage", String.class));
+        } catch (NoSuchMethodException | SecurityException ignored) {
+            return Optional.empty();
+        }
+    }
 }

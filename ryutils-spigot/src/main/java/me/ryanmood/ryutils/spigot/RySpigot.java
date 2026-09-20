@@ -9,9 +9,11 @@ public class RySpigot implements RyInitializeBase {
     private RyMessageUtil messageUtil;
     private RyTaskUtil taskUtil;
     private RySoundUtil soundUtil;
+    private RyVersionUtil versionUtil;
     private RyCommandManager commandManager;
 
     public RySpigot(Plugin plugin) {
+        this.versionUtil = new RyVersionUtil(plugin);
         this.messageUtil = new RyMessageUtil(plugin);
         this.taskUtil = new RyTaskUtil(plugin);
         this.soundUtil = new RySoundUtil();
@@ -19,6 +21,7 @@ public class RySpigot implements RyInitializeBase {
     }
 
     public RySpigot(Plugin plugin, String prefix) {
+        this.versionUtil = new RyVersionUtil(plugin);
         this.messageUtil = new RyMessageUtil(plugin, prefix);
         this.taskUtil = new RyTaskUtil(plugin);
         this.soundUtil = new RySoundUtil();
