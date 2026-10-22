@@ -16,7 +16,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 @Getter
 @Setter

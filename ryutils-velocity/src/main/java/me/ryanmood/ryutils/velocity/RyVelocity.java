@@ -8,7 +8,7 @@ import me.ryanmood.ryutils.base.RySoundBase;
 import me.ryanmood.ryutils.base.command.RyCommandManagerBase;
 import me.ryanmood.ryutils.base.exceptions.UnsupportedPlatformException;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 @Getter
 public class RyVelocity implements RyInitializeBase {
