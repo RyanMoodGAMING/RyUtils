@@ -47,10 +47,10 @@ public abstract class RyFile implements RyFileBase<Configuration> {
     public void loadFile() {
         try {
             this.config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(this.loadResource());
+            this.loadConfig();
         } catch (IOException e) {
             RyMessageUtil.getUtil().sendError("An error occurred while trying to load the file " + this.getFullName(), e);
         }
-        this.loadConfig();
     }
 
     private File loadResource() {
