@@ -9,6 +9,7 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
+import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import lombok.AccessLevel;
@@ -47,6 +48,23 @@ public abstract class RyPluginMessages implements RyPluginMessageBase<Player> {
      *
      * @param plugin     The instance of the plugin.
      * @param server     The instance of the proxy server.
+     * @param identifier The channel that we should listen on.
+     */
+    public RyPluginMessages(Object plugin, ProxyServer server, String identifier) {
+        this.plugin = plugin;
+        this.server = server;
+
+        this.identifier = identifier;
+        this.channelIdentifier = MinecraftChannelIdentifier.from(this.identifier);
+        server.getEventManager().register(plugin, this);
+        this.getServer().getChannelRegistrar().register(this.getChannelIdentifier());
+    }
+
+    /**
+     * Initialize the plugin message instance.
+     *
+     * @param plugin     The instance of the plugin.
+     * @param server     The instance of the proxy server.
      * @param identifier The identifier of the messages.
      * @param channel    The channel of the messages.
      */
@@ -58,6 +76,7 @@ public abstract class RyPluginMessages implements RyPluginMessageBase<Player> {
 
         this.channelIdentifier = MinecraftChannelIdentifier.create(this.identifier, this.channel);
         server.getEventManager().register(plugin, this);
+        this.getServer().getChannelRegistrar().register(this.getChannelIdentifier());
     }
 
     /**
